@@ -1,0 +1,15 @@
+{
+  "name": "@linkerin/starlight-to-pdf",
+  "version": "0.0.1",
+  "license": "MIT",
+  "exports": "./index.ts",
+  "exclude": [
+    ".eslintrc.js",
+    ".eslintignore",
+    ".npmignore",
+    ".github",
+    "bun.lockb",
+    "tsconfig.json",
+    "readme_assets/"
+  ]
+}

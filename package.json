@@ -1,8 +1,26 @@
 {
   "name": "starlight-to-pdf",
   "version": "0.0.1",
+  "description": "CLI tool for converting Starlight documentation websites into PDF",
   "module": "index.ts",
   "type": "module",
+  "sideEffects": false,
+  "keywords": [
+    "starlight",
+    "pdf",
+    "docs",
+    "convert",
+    "documentation"
+  ],
+  "author": "Alexey Gusev (Linkerin)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Linkerin/starlight-to-pdf.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Linkerin/starlight-to-pdf/issues"
+  },
   "devDependencies": {
     "@types/bun": "latest"
   },
