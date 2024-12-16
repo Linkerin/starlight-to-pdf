@@ -1,0 +1,16 @@
+{
+  "name": "starlight-to-pdf",
+  "version": "0.0.1",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "puppeteer": "^23.10.4",
+    "puppeteer-autoscroll-down": "^2.0.0"
+  }
+}
