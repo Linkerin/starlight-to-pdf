@@ -6,6 +6,7 @@ import {
   isFormat,
   isPath,
   isSpacing,
+  isString,
   isUrl,
 } from "./validators";
 import logger from "./logger";
@@ -23,6 +24,9 @@ class CliArgs {
           type: "string",
           short: "u",
         },
+        "contents-name": {
+          type: "string",
+        },
         filename: {
           type: "string",
           short: "f",
@@ -37,6 +41,9 @@ class CliArgs {
         margins: {
           type: "string",
           short: "m",
+        },
+        "no-contents": {
+          type: "boolean",
         },
         paddings: {
           type: "string",
@@ -98,6 +105,10 @@ class CliArgs {
           result = isUrl(value, key);
           break;
 
+        case "contents-name":
+          result = isString(value, key);
+          break;
+
         case "filename":
           result = isFilename(value, key);
           break;
@@ -113,6 +124,10 @@ class CliArgs {
 
         case "margins":
           result = isSpacing(value, key);
+          break;
+
+        case "no-contents":
+          result = isBoolean(value, key);
           break;
 
         case "paddings":

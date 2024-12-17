@@ -16,7 +16,7 @@ export function isBoolean(value: unknown, key: string): value is boolean {
   return true;
 }
 
-function isString(value: unknown, key: string): value is string {
+export function isString(value: unknown, key: string): value is string {
   if (typeof value !== "string") {
     logger.error(`For \`--${key}\` argument value must be a string.`);
     return false;

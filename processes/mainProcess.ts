@@ -3,6 +3,7 @@ import { scrollPageToBottom } from "puppeteer-autoscroll-down";
 
 import type CliArgs from "../utils/CliArgs";
 import getBaseUrl from "../utils/getBaseUrl";
+import getContents, { type Contents } from "../utils/getContents";
 import getNextUrl from "../utils/getNextUrl";
 import getHtmlContent from "../utils/getHtmlContent";
 import { getVersion } from "../utils/version";
@@ -52,10 +53,14 @@ async function mainProcess(cliArgs: CliArgs) {
   logger.info(`Docs content was found. Starting page: ${page.url()}\n`);
   await page.setViewport({ width: 799, height: 1150 });
 
+  const contentsData = new Set<Contents>();
+
   const htmlContent = await getHtmlContent({
     page,
     htmlContent: "",
+    contentsData,
   });
+  const contents = getContents(Array.from(contentsData), cliArgs);
 
   const body = `<base href="${baseUrl.origin}" />
                 <style>
@@ -65,6 +70,7 @@ async function mainProcess(cliArgs: CliArgs) {
                     break-inside: avoid !important;
                   }
                 </style>
+                ${cliArgs.values["no-contents"] ? "" : contents}
                 ${cliArgs.values.paddings ? `<style>@page { padding: ${cliArgs.values.paddings} }</style>` : ""}
                 ${htmlContent}
                `;
@@ -89,7 +95,7 @@ async function mainProcess(cliArgs: CliArgs) {
   const timeTaken = ((finishTime - startTime) / 1000).toFixed(2) + "s";
 
   logger.info(`Total processing time: ${timeTaken}.`);
-  logger.info("Thank you for using Starlight to PDF! ✨");
+  logger.info("Thank you for using Starlight to PDF!✨");
   process.exit(0);
 }
 
