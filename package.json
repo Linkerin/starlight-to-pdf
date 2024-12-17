@@ -1,14 +1,18 @@
 {
   "name": "starlight-to-pdf",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "CLI tool for converting Starlight documentation websites into PDF",
-  "module": "index.ts",
+  "source": "index.js",
   "type": "module",
   "bin": {
     "starlight-to-pdf": "index.js"
   },
   "scripts": {
-    "check": "tsc --noEmit"
+    "build": "rm -rf ./dist && bun check && bun build ./index.ts --outdir ./dist --target node  --sourcemap=none --external puppeteer --external puppeteer-autoscroll-down --splitting --minify && cp package.json README.md ./dist",
+    "check": "tsc --noEmit",
+    "pack": "cd dist && npm pack --pack-destination ~/Dev/npm-test/",
+    "publish": "cd dist && npm publish",
+    "check-publish": "cd dist && npm publish --dry-run"
   },
   "sideEffects": false,
   "keywords": [
@@ -28,9 +32,11 @@
     "url": "https://github.com/Linkerin/starlight-to-pdf/issues"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "puppeteer": "^23.10.4",
+    "puppeteer-autoscroll-down": "^2.0.0"
   },
-  "dependencies": {
+  "peerDependencies": {
     "puppeteer": "^23.10.4",
     "puppeteer-autoscroll-down": "^2.0.0"
   }

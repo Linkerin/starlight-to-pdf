@@ -18,7 +18,7 @@ class CliArgs {
 
   constructor() {
     const { values, positionals } = parseArgs({
-      args: Bun.argv,
+      args: process.argv,
       options: {
         url: {
           type: "string",
