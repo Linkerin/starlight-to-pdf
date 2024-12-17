@@ -1,4 +1,4 @@
-import { parseArgs } from "util";
+import { parseArgs } from 'util';
 
 import {
   isBoolean,
@@ -7,9 +7,9 @@ import {
   isPath,
   isSpacing,
   isString,
-  isUrl,
-} from "./validators";
-import logger from "./logger";
+  isUrl
+} from './validators';
+import logger from './logger';
 
 class CliArgs {
   private _values;
@@ -21,47 +21,47 @@ class CliArgs {
       args: process.argv,
       options: {
         url: {
-          type: "string",
-          short: "u",
+          type: 'string',
+          short: 'u'
         },
-        "contents-name": {
-          type: "string",
+        'contents-name': {
+          type: 'string'
         },
         filename: {
-          type: "string",
-          short: "f",
+          type: 'string',
+          short: 'f'
         },
         format: {
-          type: "string",
+          type: 'string'
         },
         help: {
-          type: "boolean",
-          short: "h",
+          type: 'boolean',
+          short: 'h'
         },
         margins: {
-          type: "string",
-          short: "m",
+          type: 'string',
+          short: 'm'
         },
-        "no-contents": {
-          type: "boolean",
+        'no-contents': {
+          type: 'boolean'
         },
         paddings: {
-          type: "string",
+          type: 'string'
         },
         path: {
-          type: "string",
-          short: "p",
+          type: 'string',
+          short: 'p'
         },
-        "print-bg": {
-          type: "boolean",
+        'print-bg': {
+          type: 'boolean'
         },
         version: {
-          type: "boolean",
-          short: "V",
-        },
+          type: 'boolean',
+          short: 'V'
+        }
       },
       strict: true,
-      allowPositionals: true,
+      allowPositionals: true
     });
 
     this._values = values;
@@ -69,7 +69,7 @@ class CliArgs {
 
     const checkRes = this.isValidArgs();
     if (!checkRes) {
-      logger.error("Programm exits due to invalid arguments.");
+      logger.error('Programm exits due to invalid arguments.');
       process.exit(1);
     }
 
@@ -90,59 +90,59 @@ class CliArgs {
 
   isValidArgs() {
     if (this._positionals.length > 3) {
-      logger.error("Too many positional arguments provided.");
+      logger.error('Too many positional arguments provided.');
       return false;
     }
 
     const positionalUrl = this._positionals.at(2);
-    if (positionalUrl && !isUrl(positionalUrl, "url")) return false;
+    if (positionalUrl && !isUrl(positionalUrl, 'url')) return false;
 
     let result = true;
 
     for (const [key, value] of Object.entries(this._values)) {
       switch (key as keyof typeof this._values) {
-        case "url":
+        case 'url':
           result = isUrl(value, key);
           break;
 
-        case "contents-name":
+        case 'contents-name':
           result = isString(value, key);
           break;
 
-        case "filename":
+        case 'filename':
           result = isFilename(value, key);
           break;
 
-        case "format": {
+        case 'format': {
           result = isFormat(value, key);
           break;
         }
 
-        case "help":
+        case 'help':
           result = isBoolean(value, key);
           break;
 
-        case "margins":
+        case 'margins':
           result = isSpacing(value, key);
           break;
 
-        case "no-contents":
+        case 'no-contents':
           result = isBoolean(value, key);
           break;
 
-        case "paddings":
+        case 'paddings':
           result = isSpacing(value, key);
           break;
 
-        case "path":
+        case 'path':
           result = isPath(value, key);
           break;
 
-        case "print-bg":
+        case 'print-bg':
           result = isBoolean(value, key);
           break;
 
-        case "version":
+        case 'version':
           result = isBoolean(value, key);
           break;
 
