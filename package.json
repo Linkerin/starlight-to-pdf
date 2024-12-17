@@ -1,9 +1,15 @@
 {
   "name": "starlight-to-pdf",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "CLI tool for converting Starlight documentation websites into PDF",
   "module": "index.ts",
   "type": "module",
+  "bin": {
+    "starlight-to-pdf": "index.js"
+  },
+  "scripts": {
+    "check": "tsc --noEmit"
+  },
   "sideEffects": false,
   "keywords": [
     "starlight",
@@ -12,7 +18,7 @@
     "convert",
     "documentation"
   ],
-  "author": "Alexey Gusev (Linkerin)",
+  "author": "Alexei Gusev (Linkerin)",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -23,11 +29,6 @@
   },
   "devDependencies": {
     "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0",
-    "puppeteer": "^23.10.4",
-    "puppeteer-autoscroll-down": "^2.0.0"
   },
   "dependencies": {
     "puppeteer": "^23.10.4",
