@@ -26,7 +26,7 @@ export const basePaperFormats = [
   "Legal",
   "Tabloid",
   "Ledger",
-];
+] as const;
 
 export const PAPER_FORMATS = new Set([
   ...basePaperFormats,

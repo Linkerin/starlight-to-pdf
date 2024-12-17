@@ -36,7 +36,7 @@ async function mainProcess(cliArgs: CliArgs) {
 
   const startUrls = await getNextUrl({
     page,
-    host: baseUrl.host,
+    hostname: baseUrl.hostname,
     initialSearch: true,
   });
 
@@ -55,7 +55,6 @@ async function mainProcess(cliArgs: CliArgs) {
   const htmlContent = await getHtmlContent({
     page,
     htmlContent: "",
-    host: startUrls.current,
   });
 
   const body = `<base href="${baseUrl.origin}" />

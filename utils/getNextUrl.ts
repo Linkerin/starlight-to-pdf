@@ -5,13 +5,13 @@ import logger from "./logger";
 
 interface GetNextUrlParams {
   page: Page;
-  host: string;
+  hostname?: string;
   initialSearch?: boolean;
 }
 
 interface RecursiveNextUrlSearchParams {
   page: Page;
-  host: string;
+  hostname: string;
   visitedLinks: Set<string>;
 }
 
@@ -22,7 +22,7 @@ export interface GetNextUrlReturn {
 
 async function recursiveNextUrlSearch({
   page,
-  host,
+  hostname,
   visitedLinks,
 }: RecursiveNextUrlSearchParams): Promise<GetNextUrlReturn> {
   let result: GetNextUrlReturn = {
@@ -39,12 +39,12 @@ async function recursiveNextUrlSearch({
     if (visitedLinks.has(link)) continue;
 
     const nextUrl = new URL(link);
-    if (nextUrl.host !== host) continue;
+    if (nextUrl.hostname !== hostname) continue;
 
     logger.info(`Looking for next page. Navigating to ${nextUrl.href}...`);
     visitedLinks.add(link);
     await page.goto(nextUrl.href);
-    const nextLink = await getNextUrl({ page, host });
+    const nextLink = await getNextUrl({ page, hostname });
 
     if (nextLink.next) {
       result = nextLink;
@@ -57,7 +57,7 @@ async function recursiveNextUrlSearch({
 
 async function getNextUrl({
   page,
-  host,
+  hostname,
   initialSearch = false,
 }: GetNextUrlParams): Promise<GetNextUrlReturn> {
   const result: GetNextUrlReturn = {
@@ -74,7 +74,7 @@ async function getNextUrl({
     return result;
   }
 
-  if (!initialSearch) {
+  if (!initialSearch || !hostname) {
     return result;
   }
 
@@ -82,7 +82,7 @@ async function getNextUrl({
   visitedLinks.add(page.url());
   const recursiveNextLink = await recursiveNextUrlSearch({
     page,
-    host,
+    hostname,
     visitedLinks,
   });
 
