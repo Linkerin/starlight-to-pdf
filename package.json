@@ -1,7 +1,7 @@
 {
   "name": "starlight-to-pdf",
-  "version": "0.0.4",
-  "description": "CLI tool for converting Starlight documentation websites into PDF",
+  "version": "0.0.5",
+  "description": "A command-line tool to convert Starlight documentation websites into PDF files.",
   "source": "index.js",
   "type": "module",
   "bin": {
@@ -20,7 +20,9 @@
     "pdf",
     "docs",
     "convert",
-    "documentation"
+    "documentation",
+    "astro",
+    "cli"
   ],
   "author": "Alexei Gusev (Linkerin)",
   "license": "MIT",
