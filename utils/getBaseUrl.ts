@@ -1,4 +1,4 @@
-import logger from './logger';
+import logger from "./logger";
 
 function getBaseUrl(url: string): [undefined, URL] | [Error] {
   const httpRegex = /^(https?:\/\/)/;
@@ -7,9 +7,9 @@ function getBaseUrl(url: string): [undefined, URL] | [Error] {
   let userUrl = url;
 
   if (!match) {
-    userUrl = 'https://' + url;
+    userUrl = "https://" + url;
     logger.warn(
-      `Protocol is not specified. Defaulting to HTTPS. Resulting url: ${userUrl}`
+      `Protocol is not specified. Defaulting to HTTPS. Resulting URL: ${userUrl}`,
     );
   }
 

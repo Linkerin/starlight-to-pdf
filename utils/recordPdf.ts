@@ -1,3 +1,5 @@
+import { existsSync } from "fs";
+import { mkdir } from "fs/promises";
 import path from "path";
 import type { Page, PaperFormat, PDFOptions } from "puppeteer";
 
@@ -21,8 +23,23 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
     "1cm",
     "1.5cm",
   ];
+  const dirPath = path.resolve(path.normalize(cliArgs.values.path ?? "./"));
+  // check that the directory exists or create it
+  if (!existsSync(dirPath)) {
+    const [mkdirError] = await errorCatcher(mkdir(dirPath));
+    if (mkdirError) {
+      logger.error(
+        `Couldn't create the PDF target directory: '${dirPath}'. The program aborts.`,
+      );
+      logger.error(`Error: ${mkdirError.message}`);
+      process.exit(1);
+    }
+
+    logger.info(`Created the PDF target directory: '${dirPath}'.`);
+  }
+
   const pdfOptions: PDFOptions = {
-    path: path.resolve(path.normalize(cliArgs.values.path ?? "./"), filename),
+    path: path.resolve(dirPath, filename),
     format: (cliArgs.values.format as PaperFormat) ?? "A4",
     printBackground: Boolean(cliArgs.values["print-bg"]),
     margin: {
