@@ -1,6 +1,6 @@
 import logger from "./logger";
 
-function getBaseUrl(url: string): [undefined, URL] | [Error] {
+function createBaseUrl(url: string): URL | null {
   const httpRegex = /^(https?:\/\/)/;
   const match = url.match(httpRegex);
 
@@ -13,17 +13,11 @@ function getBaseUrl(url: string): [undefined, URL] | [Error] {
     );
   }
 
-  try {
-    const urlObj = new URL(userUrl);
-
-    return [undefined, urlObj];
-  } catch (e) {
-    if (!(e instanceof Error)) {
-      throw e;
-    }
-
-    return [e];
+  if (!URL.canParse(userUrl)) {
+    return null;
   }
+
+  return new URL(userUrl);
 }
 
-export default getBaseUrl;
+export default createBaseUrl;

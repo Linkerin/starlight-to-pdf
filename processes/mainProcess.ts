@@ -2,10 +2,10 @@ import puppeteer from "puppeteer";
 import { scrollPageToBottom } from "puppeteer-autoscroll-down";
 
 import type CliArgs from "../utils/CliArgs";
-import getBaseUrl from "../utils/getBaseUrl";
-import getContents, { type Contents } from "../utils/getContents";
-import getNextUrl from "../utils/getNextUrl";
-import getHtmlContent from "../utils/getHtmlContent";
+import createBaseUrl from "../utils/createBaseUrl";
+import getAllContent from "../utils/getAllContent";
+import getContents from "../utils/getContents";
+import getStartingUrl from "../utils/getStartingUrl";
 import { getVersion } from "../utils/version";
 import logger from "../utils/logger";
 import recordPdf from "../utils/recordPdf";
@@ -23,9 +23,9 @@ async function mainProcess(cliArgs: CliArgs) {
   logger.info("Welcome to Starlight to PDF tool! 📖");
   logger.info(`version: ${version}\n`);
 
-  const [error, baseUrl] = getBaseUrl(cliArgs.url);
-  if (error) {
-    logger.error(`Invalid URL: '${cliArgs.url}'.\nError: ${error.message}`);
+  const baseUrl = createBaseUrl(cliArgs.url);
+  if (!baseUrl) {
+    logger.error(`Invalid URL provided: '${cliArgs.url}.`);
     process.exit(1);
   }
 
@@ -33,41 +33,40 @@ async function mainProcess(cliArgs: CliArgs) {
 
   const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
-  await page.goto(baseUrl.href);
+  await page.setViewport({ width: 799, height: 1150 });
+  page.setDefaultTimeout(60000);
 
-  const startUrls = await getNextUrl({
+  const startUrl = await getStartingUrl({
     page,
-    hostname: baseUrl.hostname,
-    initialSearch: true,
+    url: baseUrl,
   });
-
-  if (!startUrls.next) {
+  if (!startUrl) {
     logger.error(
       "The beginning of docs content was not found. Check the provided URL.",
     );
-    await browser.close();
-
     process.exit(1);
   }
 
-  logger.info(`Docs content was found. Starting page: ${page.url()}\n`);
-  await page.setViewport({ width: 799, height: 1150 });
+  logger.info(`Docs content was found. Starting page: ${startUrl.href}\n`);
 
-  const contentsData = new Set<Contents>();
-
-  const htmlContent = await getHtmlContent({
+  const { htmlContent, contentsData } = await getAllContent({
     page,
     htmlContent: "",
-    contentsData,
+    contentsData: new Set(),
   });
   const contents = getContents(Array.from(contentsData), cliArgs);
 
   const body = `<base href="${baseUrl.origin}" />
                 <style>
+                aside,
+                code,
                   figure,
-                  pre,
-                  code {
+                  pre {
                     break-inside: avoid !important;
+                  }
+
+                  .s2pdf-pagebreak {
+                    break-after: page;
                   }
                 </style>
                 ${cliArgs.values["no-contents"] ? "" : contents}
@@ -77,7 +76,7 @@ async function mainProcess(cliArgs: CliArgs) {
 
   logger.info("Adjusting content. It may take a while...");
 
-  await page.goto(startUrls.current, {
+  await page.goto(startUrl.href, {
     waitUntil: "networkidle2",
   });
   await page.evaluate((result) => {

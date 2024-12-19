@@ -39,6 +39,12 @@ using the `--url` (or `-u`) flag.
 | `--print-bg`      |       | `boolean` | Set to print background graphics. It's a `printBackground` property in [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions/).                                                                  |
 | `--version`       | `-V`  | `boolean` | Displays the version of the tool and exits.                                                                                                                                                                   |
 
+Usage example:
+
+```bash
+npx starlight-to-pdf spectrum.snipshot.dev -p ./output --filename spectrum-docs --contents-name "Table of contents" --margins '0 0 0 0' --paddings '1cm 1cm 1cm 1.5cm' --print-bg
+```
+
 ## 📨 Contacts <a id="contacts"></a>
 
 If you want to get in touch, you may open a
