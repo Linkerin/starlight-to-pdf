@@ -29,7 +29,7 @@ const parsers = {
   },
 
   exclude: (value: string, url?: string): Set<string> => {
-    const excludeValues = value.split(', ');
+    const excludeValues = value.split(' ');
     if (!url) {
       throw new ValidationError('Base URL is required to parse excludes');
     }
