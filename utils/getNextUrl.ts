@@ -1,10 +1,11 @@
-import type { Page } from "puppeteer";
+import type { Page } from 'puppeteer';
 
-import errorCatcher from "./errorCatcher";
+import errorCatcher from './errorCatcher';
+import { SELECTORS } from '../lib/constants';
 
 async function getNextUrl(page: Page): Promise<URL | null> {
   const [nextLinkError, nextLink] = await errorCatcher(
-    page.$eval("a[rel='next']", (el: HTMLAnchorElement) => el.href),
+    page.$eval(SELECTORS.nextLink, (el: HTMLAnchorElement) => el.href)
   );
 
   if (nextLinkError) {

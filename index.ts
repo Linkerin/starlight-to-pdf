@@ -1,13 +1,33 @@
 #!/usr/bin/env node
 
-import CliArgs from "./utils/CliArgs";
-import mainProcess from "./processes/mainProcess";
-import versionProcess from "./processes/versionProcess";
+import CliArgs from './utils/CliArgs';
+import logger from './utils/logger';
+import mainProcess from './processes/mainProcess';
+import { ParsingError, ValidationError } from './services/Errors';
+import versionProcess from './processes/versionProcess';
 
-const cliArgs = new CliArgs();
+try {
+  const cliArgs = new CliArgs();
 
-if (cliArgs.values.version) {
-  await versionProcess();
+  if (cliArgs.values.version) {
+    await versionProcess();
+  }
+
+  await mainProcess(cliArgs);
+} catch (err) {
+  if (err instanceof ValidationError || err instanceof ParsingError) {
+    logger.error(`${err.name}: ${err.message}`);
+    if (err.additionalInfo?.originalErrorMessage) {
+      logger.error(`Error: ${err.additionalInfo.originalErrorMessage}`);
+    }
+  } else {
+    logger.error('Unknown error occurred.');
+    if (err instanceof Error) {
+      logger.error(`Error: ${err.message}`);
+    }
+  }
+
+  logger.error('Program exits.');
+
+  process.exit(1);
 }
-
-await mainProcess(cliArgs);

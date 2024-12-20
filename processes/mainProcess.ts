@@ -1,101 +1,115 @@
-import puppeteer from "puppeteer";
-import { scrollPageToBottom } from "puppeteer-autoscroll-down";
+import puppeteer, { Browser } from 'puppeteer';
+import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
 
-import type CliArgs from "../utils/CliArgs";
-import createBaseUrl from "../utils/createBaseUrl";
-import getAllContent from "../utils/getAllContent";
-import getContents from "../utils/getContents";
-import getStartingUrl from "../utils/getStartingUrl";
-import { getVersion } from "../utils/version";
-import logger from "../utils/logger";
-import recordPdf from "../utils/recordPdf";
+import { CLASSNAMES } from '../lib/constants';
+import type CliArgs from '../utils/CliArgs';
+import createBaseUrl from '../utils/createBaseUrl';
+import getAllContent from '../utils/getAllContent';
+import getContents from '../utils/getContents';
+import getStartingUrl from '../utils/getStartingUrl';
+import { getVersion } from '../utils/version';
+import logger from '../utils/logger';
+import recordPdf from '../utils/recordPdf';
+import { ParsingError, ValidationError } from '../services/Errors';
 
 async function mainProcess(cliArgs: CliArgs) {
-  if (!cliArgs.url) {
-    logger.error(
-      "URL for parsing is required. Provide `--url` argument value.",
-    );
-    process.exit(1);
-  }
+  let browser: Browser | null = null;
 
-  const version = await getVersion();
+  try {
+    if (!cliArgs.url) {
+      throw new ValidationError(
+        'URL for parsing is required. Provide `--url` argument value.'
+      );
+    }
 
-  logger.info("Welcome to Starlight to PDF tool! 📖");
-  logger.info(`version: ${version}\n`);
+    const version = await getVersion();
 
-  const baseUrl = createBaseUrl(cliArgs.url);
-  if (!baseUrl) {
-    logger.error(`Invalid URL provided: '${cliArgs.url}.`);
-    process.exit(1);
-  }
+    logger.info('Welcome to Starlight to PDF tool! 📖');
+    logger.info(`version: ${version}\n`);
 
-  const startTime = performance.now();
+    const baseUrl = createBaseUrl(cliArgs.url);
+    if (!baseUrl) {
+      throw new ValidationError(`Invalid URL provided: '${cliArgs.url}.`);
+    }
 
-  const browser = await puppeteer.launch({ headless: true });
-  const page = await browser.newPage();
-  await page.setViewport({ width: 799, height: 1150 });
-  page.setDefaultTimeout(60000);
+    const startTime = performance.now();
 
-  const startUrl = await getStartingUrl({
-    page,
-    url: baseUrl,
-  });
-  if (!startUrl) {
-    logger.error(
-      "The beginning of docs content was not found. Check the provided URL.",
-    );
-    process.exit(1);
-  }
+    browser = await puppeteer.launch({ headless: true });
+    const page = await browser.newPage();
+    await page.setViewport({ width: 799, height: 1150 });
+    page.setDefaultTimeout(60000);
 
-  logger.info(`Docs content was found. Starting page: ${startUrl.href}\n`);
+    const startUrl = await getStartingUrl({
+      page,
+      url: baseUrl
+    });
+    if (!startUrl) {
+      throw new ParsingError(
+        'The beginning of docs content was not found. Check the provided URL.'
+      );
+    }
 
-  const { htmlContent, contentsData } = await getAllContent({
-    page,
-    htmlContent: "",
-    contentsData: new Set(),
-  });
-  const contents = getContents(Array.from(contentsData), cliArgs);
+    logger.info(`Docs content was found. Starting page: ${startUrl.href}\n`);
 
-  const body = `<base href="${baseUrl.origin}" />
+    const { htmlContent, contentsData } = await getAllContent({
+      page,
+      htmlContent: '',
+      contentsData: new Set()
+    });
+    const contents = getContents(Array.from(contentsData), cliArgs);
+
+    const body = `<base href="${baseUrl.origin}" />
                 <style>
-                aside,
-                code,
+                  aside,
+                  code,
                   figure,
                   pre {
                     break-inside: avoid !important;
                   }
 
-                  .s2pdf-pagebreak {
+                  .${CLASSNAMES.pageBreak} {
                     break-after: page;
                   }
                 </style>
-                ${cliArgs.values["no-contents"] ? "" : contents}
-                ${cliArgs.values.paddings ? `<style>@page { padding: ${cliArgs.values.paddings} }</style>` : ""}
+                ${cliArgs.values['no-contents'] ? '' : contents}
+                ${
+                  cliArgs.values.paddings
+                    ? `<style>@page { padding: ${cliArgs.values.paddings} }</style>`
+                    : ''
+                }
                 ${htmlContent}
                `;
 
-  logger.info("Adjusting content. It may take a while...");
+    logger.info('Adjusting content. It may take a while...');
 
-  await page.goto(startUrl.href, {
-    waitUntil: "networkidle2",
-  });
-  await page.evaluate((result) => {
-    const body = document.body;
-    body.innerHTML = result;
-    return body.innerHTML;
-  }, body);
-  await scrollPageToBottom(page, { size: 1100 });
+    await page.goto(startUrl.href, {
+      waitUntil: 'networkidle2'
+    });
+    await page.evaluate(result => {
+      const body = document.body;
+      body.innerHTML = result;
+      return body.innerHTML;
+    }, body);
+    await scrollPageToBottom(page, { size: 1100 });
 
-  await recordPdf({ cliArgs, hostname: baseUrl.hostname, page });
+    await recordPdf({ cliArgs, hostname: baseUrl.hostname, page });
 
-  await browser.close();
+    await browser.close();
 
-  const finishTime = performance.now();
-  const timeTaken = ((finishTime - startTime) / 1000).toFixed(2) + "s";
+    const finishTime = performance.now();
+    const timeTaken = ((finishTime - startTime) / 1000).toFixed(2) + 's';
 
-  logger.info(`Total processing time: ${timeTaken}.`);
-  logger.info("Thank you for using Starlight to PDF!✨");
-  process.exit(0);
+    logger.info(`Total processing time: ${timeTaken}.`);
+    logger.info('Thank you for using Starlight to PDF!✨');
+
+    process.exit(0);
+  } catch (err) {
+    if (browser) {
+      await browser.close();
+    }
+
+    throw err;
+  }
 }
 
 export default mainProcess;

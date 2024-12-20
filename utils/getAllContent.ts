@@ -1,9 +1,11 @@
-import type { Page } from "puppeteer";
+import type { Page } from 'puppeteer';
 
-import type { Contents } from "./getContents";
-import logger from "./logger";
-import getNextUrl from "./getNextUrl";
-import errorCatcher from "./errorCatcher";
+import type { Contents } from './getContents';
+import { CLASSNAMES, SELECTORS } from '../lib/constants';
+import errorCatcher from './errorCatcher';
+import getNextUrl from './getNextUrl';
+import logger from './logger';
+import { ParsingError } from '../services/Errors';
 
 interface ProcessPageContentReturn {
   contents: Contents;
@@ -11,50 +13,55 @@ interface ProcessPageContentReturn {
 }
 
 async function processPageContent(
-  page: Page,
+  page: Page
 ): Promise<ProcessPageContentReturn> {
   const currentLink = page.url();
 
   const [error, parsedData] = await errorCatcher(
-    page.evaluate((link) => {
-      const headingElement = document.querySelector("*:has(> h1#_top)");
-      const heading: HTMLElement | null = headingElement
-        ? (headingElement as HTMLElement)
-        : null;
+    page.evaluate(
+      (link, selectors, classnames) => {
+        const heading = document.querySelector(
+          selectors.heading
+        ) as HTMLElement | null;
+        heading?.classList.add(classnames.heading);
 
-      const mainInfo = document.querySelector(".sl-markdown-content");
-      if (mainInfo) {
-        mainInfo.classList.add("s2pdf-pagebreak");
-      }
-      const subheadingElements = document.querySelectorAll(
-        ".sl-markdown-content h2",
-      );
-      const subheadings = Array.from(subheadingElements) as HTMLElement[];
+        const mainInfo = document.querySelector(selectors.mainInfo);
+        mainInfo?.classList.add(classnames.pageBreak);
 
-      return {
-        heading: {
-          html: heading?.outerHTML ?? "",
-          text: heading?.innerText ?? "",
-        },
-        mainInfo: { html: mainInfo?.outerHTML ?? "" },
-        subheadings: subheadings.map((el) => ({
-          heading: el.innerText ?? "",
-          url: link + "#" + el.getAttribute("id"),
-        })),
-      };
-    }, currentLink),
+        const subheadingElements = document.querySelectorAll(
+          selectors.subheading
+        ) as NodeListOf<HTMLElement>;
+        const subheadings = Array.from(subheadingElements);
+
+        return {
+          heading: {
+            html: heading?.outerHTML ?? '',
+            text: heading?.innerText ?? ''
+          },
+          mainInfo: { html: mainInfo?.outerHTML ?? '' },
+          subheadings: subheadings.map(el => ({
+            heading: el.innerText ?? '',
+            url: link + '#' + el.getAttribute('id')
+          }))
+        };
+      },
+      currentLink,
+      SELECTORS,
+      CLASSNAMES
+    )
   );
 
   if (error) {
-    logger.error("Caught error while parsing the page. The program aborts.");
-    logger.error(`Error: ${error.message}`);
-    process.exit(1);
+    throw new ParsingError(
+      `Didn't manage to parse the following page: '${currentLink}'`,
+      { originalErrorMessage: error.message }
+    );
   }
 
   const contents: Contents = {
     heading: parsedData.heading.text,
     url: currentLink,
-    children: parsedData.subheadings,
+    children: parsedData.subheadings
   };
 
   let html = parsedData.heading.html + parsedData.mainInfo.html;
@@ -68,12 +75,12 @@ interface GetAllContentParams {
   page: Page;
 }
 
-type GetAllContentReturn = Omit<GetAllContentParams, "url" | "page">;
+type GetAllContentReturn = Omit<GetAllContentParams, 'url' | 'page'>;
 
 async function getAllContent({
   contentsData,
   htmlContent,
-  page,
+  page
 }: GetAllContentParams): Promise<GetAllContentReturn> {
   logger.info(`Parsing page: ${page.url()}`);
 
@@ -85,20 +92,20 @@ async function getAllContent({
   const nextUrl = await getNextUrl(page);
   if (!nextUrl) {
     logger.info(
-      `All pages were parsed. Total web pages: ${contentsData.size}.\n`,
+      `All pages were parsed. Web pages total: ${contentsData.size}.\n`
     );
     return {
       htmlContent: updatedHtmlContent,
-      contentsData,
+      contentsData
     };
   }
 
-  await page.goto(nextUrl.href, { waitUntil: "domcontentloaded" });
+  await page.goto(nextUrl.href, { waitUntil: 'domcontentloaded' });
 
   return getAllContent({
     htmlContent: updatedHtmlContent,
     contentsData: contentsData,
-    page,
+    page
   });
 }
 

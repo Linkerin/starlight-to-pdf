@@ -1,8 +1,9 @@
-import type { Page } from "puppeteer";
+import type { Page } from 'puppeteer';
 
-import errorCatcher from "./errorCatcher";
-import getNextUrl from "./getNextUrl";
-import logger from "./logger";
+import errorCatcher from './errorCatcher';
+import getNextUrl from './getNextUrl';
+import logger from './logger';
+import { ParsingError } from '../services/Errors';
 
 interface GetNextUrlParams {
   initialSearch?: boolean;
@@ -13,14 +14,14 @@ interface GetNextUrlParams {
 async function getStartingUrl({
   initialSearch = true,
   page,
-  url,
+  url
 }: GetNextUrlParams): Promise<URL | null> {
   const [error] = await errorCatcher(page.goto(url.href));
 
   if (error) {
-    logger.error(`Error fetching ${url.href}. The program aborts.`);
-    logger.error(`Error: ${error.message}`);
-    process.exit(1);
+    throw new ParsingError(`Error occured while fetching '${url.href}.'`, {
+      originalErrorMessage: error.message
+    });
     // TODO: handle retries
   }
 
@@ -31,9 +32,7 @@ async function getStartingUrl({
   if (!initialSearch) return null;
 
   // recursive search for the page to start parsing
-  const links = await page.$$eval("a", (links) =>
-    links.map((link) => link.href),
-  );
+  const links = await page.$$eval('a', links => links.map(link => link.href));
   if (links.length === 0) return null;
 
   const visitedLinks = new Set<string>();
@@ -52,13 +51,13 @@ async function getStartingUrl({
     const nextResult = await getStartingUrl({
       url: nextUrl,
       initialSearch: false,
-      page,
+      page
     });
 
     if (nextResult) return nextResult;
   }
 
-  logger.info("No more pages found.");
+  logger.info('No more pages found.');
 
   return null;
 }
