@@ -29,6 +29,7 @@ using the `--url` (or `-u`) flag.
 | ----------------- | ----- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `--url`           | `-u`  | `string`  | The URL of the Starlight powered documentation website to convert to PDF. The only positional argument can be used instead of this flag. See [👨‍💻 Example usage](#usage) for more details.                     |
 | `--contents-name` |       | `string`  | The name used for the generated table of contents in the PDF. By default, it's `"Contents"`                                                                                                                   |
+| `--exclude`       | `-e`  | `string`  | A string containing links separated by `space` that shouldn't be added to the resulting PDF file (e.g. `--exclude '/docs/contacts /docs/demo'`).                                                              |
 | `--filename`      | `-f`  | `string`  | The output filename for the generated PDF. Default is the [hostname](https://developer.mozilla.org/en-US/docs/Web/API/URL/hostname) of the provided website.                                                  |
 | `--format`        |       | `string`  | The paper format (e.g., `A4`, `Letter`) for the generated PDF. Check [Puppeteer's paper formats](https://pptr.dev/api/puppeteer.paperformat) for more details                                                 |
 | `--help`          | `-h`  | `boolean` | Displays the help message and exits.                                                                                                                                                                          |
@@ -46,6 +47,10 @@ npx starlight-to-pdf spectrum.snipshot.dev -p ./output --filename spectrum-docs 
 ```
 
 Resulting PDF file: [spectrum-docs.pdf](./readme_assets/spectrum-docs.pdf)
+
+### Demo
+
+![Usage demo](./readme_assets/demo.gif)
 
 ## 📨 Contacts <a id="contacts"></a>
 
