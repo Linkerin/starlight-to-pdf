@@ -1,13 +1,13 @@
-import { resolve } from "path";
-import { readFile } from "fs/promises";
+import { resolve } from 'path';
+import { readFile } from 'fs/promises';
 
-import errorCatcher from "./errorCatcher";
-import logger from "./logger";
+import errorCatcher from './errorCatcher';
+import logger from '../services/Logger';
 
 export async function getVersion(): Promise<string | null> {
-  const packagePath = resolve(__dirname, "../package.json");
+  const packagePath = resolve(__dirname, '../package.json');
   const [error, file] = await errorCatcher(
-    readFile(packagePath, { encoding: "utf8" }),
+    readFile(packagePath, { encoding: 'utf8' })
   );
   if (error) return null;
 
@@ -21,7 +21,7 @@ export async function showVersion(): Promise<void> {
   const version = await getVersion();
 
   if (!version) {
-    logger.error("Could not find version info");
+    logger.error('Could not find version info');
     return;
   }
 

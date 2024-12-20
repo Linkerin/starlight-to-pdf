@@ -2,13 +2,12 @@ import puppeteer, { Browser } from 'puppeteer';
 import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
 
 import { CLASSNAMES } from '../lib/constants';
-import type CliArgs from '../utils/CliArgs';
-import createBaseUrl from '../utils/createBaseUrl';
+import type CliArgs from '../services/CliArgs';
 import getAllContent from '../utils/getAllContent';
 import getContents from '../utils/getContents';
 import getStartingUrl from '../utils/getStartingUrl';
 import { getVersion } from '../utils/version';
-import logger from '../utils/logger';
+import logger from '../services/Logger';
 import recordPdf from '../utils/recordPdf';
 import { ParsingError, ValidationError } from '../services/Errors';
 
@@ -16,7 +15,7 @@ async function mainProcess(cliArgs: CliArgs) {
   let browser: Browser | null = null;
 
   try {
-    if (!cliArgs.url) {
+    if (!cliArgs.values.url) {
       throw new ValidationError(
         'URL for parsing is required. Provide `--url` argument value.'
       );
@@ -27,10 +26,7 @@ async function mainProcess(cliArgs: CliArgs) {
     logger.info('Welcome to Starlight to PDF tool! 📖');
     logger.info(`version: ${version}\n`);
 
-    const baseUrl = createBaseUrl(cliArgs.url);
-    if (!baseUrl) {
-      throw new ValidationError(`Invalid URL provided: '${cliArgs.url}.`);
-    }
+    const baseUrl = cliArgs.values.url;
 
     const startTime = performance.now();
 
@@ -54,7 +50,8 @@ async function mainProcess(cliArgs: CliArgs) {
     const { htmlContent, contentsData } = await getAllContent({
       page,
       htmlContent: '',
-      contentsData: new Set()
+      contentsData: new Set(),
+      exclude: cliArgs.values.exclude
     });
     const contents = getContents(Array.from(contentsData), cliArgs);
 

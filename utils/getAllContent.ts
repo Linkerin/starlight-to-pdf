@@ -4,7 +4,7 @@ import type { Contents } from './getContents';
 import { CLASSNAMES, SELECTORS } from '../lib/constants';
 import errorCatcher from './errorCatcher';
 import getNextUrl from './getNextUrl';
-import logger from './logger';
+import logger from '../services/Logger';
 import { ParsingError } from '../services/Errors';
 
 interface ProcessPageContentReturn {
@@ -73,21 +73,30 @@ interface GetAllContentParams {
   htmlContent: string;
   contentsData: Set<Contents>;
   page: Page;
+  exclude: Set<string>;
 }
 
-type GetAllContentReturn = Omit<GetAllContentParams, 'url' | 'page'>;
+type GetAllContentReturn = Pick<
+  GetAllContentParams,
+  'contentsData' | 'htmlContent'
+>;
 
 async function getAllContent({
   contentsData,
   htmlContent,
-  page
+  page,
+  exclude
 }: GetAllContentParams): Promise<GetAllContentReturn> {
-  logger.info(`Parsing page: ${page.url()}`);
+  let parsedHtml = '';
 
-  const { contents, html } = await processPageContent(page);
-  contentsData.add(contents);
+  if (!exclude.has(page.url())) {
+    logger.info(`Parsing page: ${page.url()}`);
+    const { contents, html } = await processPageContent(page);
+    contentsData.add(contents);
+    parsedHtml = html;
+  }
 
-  const updatedHtmlContent = htmlContent + html;
+  const updatedHtmlContent = htmlContent + parsedHtml;
 
   const nextUrl = await getNextUrl(page);
   if (!nextUrl) {
@@ -105,7 +114,8 @@ async function getAllContent({
   return getAllContent({
     htmlContent: updatedHtmlContent,
     contentsData: contentsData,
-    page
+    page,
+    exclude
   });
 }
 

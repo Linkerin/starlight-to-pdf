@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import CliArgs from './utils/CliArgs';
-import logger from './utils/logger';
+import CliArgs from './services/CliArgs';
+import logger from './services/Logger';
 import mainProcess from './processes/mainProcess';
 import { ParsingError, ValidationError } from './services/Errors';
 import versionProcess from './processes/versionProcess';

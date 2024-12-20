@@ -1,9 +1,11 @@
-import logger from './logger';
-import type { Spacing } from '../lib/types/cli.types';
+import logger from '../services/Logger';
+import { ValidationError } from '../services/Errors';
 
 const parsers = {
-  url: (url: string): URL | null => {
-    if (!url) return null;
+  url: (url: string): URL => {
+    if (!url) {
+      throw new ValidationError('URL is required');
+    }
 
     const httpRegex = /^(https?:\/\/)/;
     const match = url.match(httpRegex);
@@ -18,19 +20,40 @@ const parsers = {
     }
 
     if (!URL.canParse(userUrl)) {
-      return null;
+      throw new ValidationError(
+        `Can not parse URL. '${userUrl}' is not a valid URL string.`
+      );
     }
 
     return new URL(userUrl);
   },
 
-  spacings: (value: string): Spacing => {
-    const values = value.split(' ');
-    return values.map(v => parseFloat(v)) as Spacing;
-  },
+  exclude: (value: string, url?: string): Set<string> => {
+    const excludeValues = value.split(', ');
+    if (!url) {
+      throw new ValidationError('Base URL is required to parse excludes');
+    }
 
-  margins: (value: string): Spacing => parsers.spacings(value),
-  paddings: (value: string): Spacing => parsers.spacings(value)
+    const urlObj = parsers.url(url);
+    const excludeUrls: Set<string> = new Set();
+
+    for (const excludeValue of excludeValues) {
+      if (!URL.canParse(excludeValue, urlObj)) {
+        throw new ValidationError(
+          `Invalid URL path as exclude value: '${excludeValue}'.`
+        );
+      }
+
+      const excludeUrl = new URL(excludeValue, urlObj);
+      const href =
+        excludeUrl.href.at(-1) === '/'
+          ? excludeUrl.href
+          : excludeUrl.href + '/';
+      excludeUrls.add(href);
+    }
+
+    return excludeUrls;
+  }
 };
 
 export default parsers;

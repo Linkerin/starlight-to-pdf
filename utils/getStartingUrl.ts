@@ -2,7 +2,7 @@ import type { Page } from 'puppeteer';
 
 import errorCatcher from './errorCatcher';
 import getNextUrl from './getNextUrl';
-import logger from './logger';
+import logger from '../services/Logger';
 import { ParsingError } from '../services/Errors';
 
 interface GetNextUrlParams {

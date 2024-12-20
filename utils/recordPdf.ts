@@ -3,9 +3,9 @@ import { mkdir } from 'fs/promises';
 import path from 'path';
 import type { Page, PaperFormat, PDFOptions } from 'puppeteer';
 
-import type CliArgs from './CliArgs';
+import type CliArgs from '../services/CliArgs';
 import errorCatcher from './errorCatcher';
-import logger from './logger';
+import logger from '../services/Logger';
 import { ParsingError } from '../services/Errors';
 
 interface RecordPdfParams {

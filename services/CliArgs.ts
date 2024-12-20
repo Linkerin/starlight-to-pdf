@@ -1,6 +1,6 @@
 import { parseArgs } from 'util';
 
-import type { CliOption, CliValue } from '../lib/types/cli.types';
+import type { CliOption, CliValue, CliValuesObj } from '../lib/types/cli.types';
 import parsers from '../utils/cliArgParsers';
 import { ValidationError } from './Errors';
 import validators from '../utils/validators';
@@ -19,8 +19,8 @@ const cliOptions: CliOption = {
   exclude: {
     type: 'string',
     short: 'e',
-    validate: validators.isString
-    // transform: (value: unknown) => (value as string).split(' ')
+    validate: validators.isString,
+    parse: parsers.exclude
   },
   filename: {
     type: 'string',
@@ -39,8 +39,7 @@ const cliOptions: CliOption = {
   margins: {
     type: 'string',
     short: 'm',
-    validate: validators.isSpacing,
-    parse: parsers.margins
+    validate: validators.isSpacing
   },
   'no-contents': {
     type: 'boolean',
@@ -48,8 +47,7 @@ const cliOptions: CliOption = {
   },
   paddings: {
     type: 'string',
-    validate: validators.isSpacing,
-    parse: parsers.paddings
+    validate: validators.isSpacing
   },
   path: {
     type: 'string',
@@ -67,72 +65,83 @@ const cliOptions: CliOption = {
   }
 };
 
-class CliArgsNew {
-  private readonly _values: Record<string, any>;
-  private readonly _positionals: string[];
+// TODO: solve typing issues, they are not properly inferred
+class CliArgs {
+  private _values: CliValuesObj = {} as CliValuesObj;
+  private _positionals;
 
   constructor() {
-    const { values, positionals } = parseArgs({
-      args: process.argv,
-      options: Object.entries(cliOptions).reduce((acc, [key, opt]) => {
-        acc[key] = { type: opt.type, short: opt.short };
-        return acc;
-      }, {} as Record<string, Pick<CliOption[keyof CliOption], 'type' | 'short'>>),
-      strict: true,
-      allowPositionals: true
-    });
+    try {
+      const { values, positionals } = parseArgs({
+        args: process.argv,
+        options: Object.entries(cliOptions).reduce((acc, [key, opt]) => {
+          acc[key as CliValue] = { type: opt.type };
+          if (opt.short) {
+            acc[key as CliValue].short = opt.short;
+          }
+          return acc;
+        }, {} as Record<CliValue, Pick<CliOption[keyof CliOption], 'type' | 'short'>>),
+        strict: true,
+        allowPositionals: true
+      });
 
-    if (!values.url && positionals.at(2)) {
-      values.url = positionals.at(2);
-    }
+      if (positionals.length > 3) {
+        throw new ValidationError('Too many positional arguments provided.');
+      }
 
-    if (this._validateArgs(values)) {
-      this._values = this._parseValues(values);
       this._positionals = positionals;
 
-      return;
-    }
-
-    throw new ValidationError(
-      'Arguments parsing failed due to invalid values provided.'
-    );
-  }
-
-  private _validateArgs(values: Record<string, unknown>): boolean {
-    if (this._positionals?.length > 3) {
-      throw new ValidationError('Too many positional arguments provided.');
-    }
-
-    const positionalUrl = this._positionals?.at(2);
-    if (positionalUrl && !validators.isUrl(positionalUrl, 'url')) {
-      return false;
-    }
-
-    return Object.entries(values).every(([key, value]) => {
-      const option = cliOptions[key as CliValue];
-
-      if (option) return option.validate(value, key);
-
-      return false;
-    });
-  }
-
-  private _parseValues(values: Record<string, unknown>) {
-    const transformed: Record<string, unknown> = {};
-
-    for (const [key, value] of Object.entries(values)) {
-      const argOption = cliOptions[key as CliValue];
-      if (!argOption || !argOption.parse) {
-        transformed[key as CliValue] = value;
-      } else {
-        transformed[key as CliValue] = argOption.parse(value as string);
+      if (!values.url && positionals.at(2)) {
+        values.url = positionals.at(2);
       }
+
+      if (!values.url && !values.help && !values.version) {
+        throw new ValidationError(
+          'URL for parsing is required. Provide `--url` argument value.'
+        );
+      }
+
+      for (const [key, value] of Object.entries(values)) {
+        if (!value) continue;
+        const flag = key as CliValue;
+        const option = cliOptions[flag];
+        const isValid = option.validate(value, key);
+        if (!isValid) {
+          throw new ValidationError(
+            `Invalid value provided for \`--${flag}\`.`
+          );
+        }
+
+        if (!option.parse) {
+          this._values[flag] = value as any;
+          continue;
+        }
+
+        if (flag === 'exclude') {
+          this._values[flag] = option.parse(
+            value as string,
+            values.url as string
+          ) as any;
+        } else {
+          this._values[flag] = option.parse(value as string) as any;
+        }
+      }
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        throw err;
+      }
+
+      if (err instanceof Error) {
+        throw new ValidationError(
+          'Arguments parsing failed due to invalid values provided.',
+          { originalErrorMessage: err.message }
+        );
+      }
+
+      throw err;
     }
-
-    return transformed;
   }
-
-  get values() {
+  get values(): CliValuesObj {
     return this._values;
   }
 
@@ -141,4 +150,4 @@ class CliArgsNew {
   }
 }
 
-export default CliArgsNew;
+export default CliArgs;

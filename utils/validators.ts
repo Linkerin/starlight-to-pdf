@@ -27,7 +27,7 @@ const validators = {
   },
 
   isFilename(name: unknown, key: string): name is string {
-    if (!this.isString(name, key)) return false;
+    if (!validators.isString(name, key)) return false;
 
     if (name.trim() === '') {
       throw new ValidationError(
@@ -45,7 +45,7 @@ const validators = {
   },
 
   isFormat(format: unknown, key: string): format is PaperFormat {
-    if (!this.isString(format, key)) return false;
+    if (!validators.isString(format, key)) return false;
 
     if (!PAPER_FORMATS.has(format)) {
       throw new ValidationError(
@@ -59,7 +59,7 @@ const validators = {
   },
 
   isPath(value: unknown, key: string): boolean {
-    if (!this.isString(value, key)) return false;
+    if (!validators.isString(value, key)) return false;
 
     if (value.trim() === '') {
       throw new ValidationError(
@@ -86,7 +86,7 @@ const validators = {
   },
 
   isSpacing(values: unknown, key: string): boolean {
-    if (!this.isString(values, key)) return false;
+    if (!validators.isString(values, key)) return false;
 
     const spacingValues = values.split(' ');
     if (spacingValues.length !== 4) {
@@ -108,7 +108,7 @@ const validators = {
   },
 
   isUrl(value: unknown, key: string): boolean {
-    if (!this.isString(value, key)) return false;
+    if (!validators.isString(value, key)) return false;
 
     const urlRegex =
       /^(https?:\/\/)?((([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,})|(localhost)|(\d{1,3}(\.\d{1,3}){3}))(:\d+)?(\/[^\s]*)?$/;

@@ -42,8 +42,10 @@ using the `--url` (or `-u`) flag.
 Usage example:
 
 ```bash
-npx starlight-to-pdf spectrum.snipshot.dev -p ./output --filename spectrum-docs --contents-name "Table of contents" --margins '0 0 0 0' --paddings '1cm 1cm 1cm 1.5cm' --print-bg
+npx starlight-to-pdf spectrum.snipshot.dev -p ./output --filename spectrum-docs --contents-name "Table of contents" --margins '0 0 0 0' --paddings '1cm 1cm 1cm 1.5cm' --exclude /demo  --print-bg
 ```
+
+Resulting PDF file: [spectrum-docs.pdf](./readme_assets/spectrum-docs.pdf)
 
 ## 📨 Contacts <a id="contacts"></a>
 

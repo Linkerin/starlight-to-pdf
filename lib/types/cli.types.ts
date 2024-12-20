@@ -1,12 +1,5 @@
 import type parsers from '../../utils/cliArgParsers';
 
-export type Spacing = [number, number, number, number];
-
-export interface ParsedArgs {
-  values: Record<string, any>;
-  positionals: string[];
-}
-
 export type CliValue =
   | 'url'
   | 'contents-name'
@@ -21,6 +14,23 @@ export type CliValue =
   | 'print-bg'
   | 'version';
 
+type ParsersObj = typeof parsers;
+
+type ParserReturnType<K extends keyof ParsersObj> = ReturnType<ParsersObj[K]>;
+
+type ParsedValue<
+  T extends CliOption[keyof CliOption],
+  K extends keyof CliOption
+> = K extends keyof ParsersObj
+  ? ParserReturnType<K>
+  : T extends { type: 'boolean' }
+  ? boolean
+  : string;
+
+export type CliValuesObj = {
+  [K in keyof CliOption]: ParsedValue<CliOption[K], K>;
+};
+
 export type CliOption = {
   [K in CliValue]: {
     type: 'string' | 'boolean';
@@ -29,20 +39,3 @@ export type CliOption = {
     parse?: K extends keyof ParsersObj ? ParsersObj[K] : undefined;
   };
 };
-
-// export interface CliValues {
-//   url?: string;
-//   contentsName?: string;
-//   exclude?: string[];
-//   filename?: string;
-//   format?: PaperFormat;
-//   help?: boolean;
-//   margins?: Spacing;
-//   noContents?: boolean;
-//   paddings?: Spacing;
-//   path?: string;
-//   printBg?: boolean;
-//   version?: boolean;
-// }
-
-export type ParsersObj = typeof parsers;
