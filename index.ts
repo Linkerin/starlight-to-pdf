@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import CliArgs from './services/CliArgs';
+import helpProcess from './processes/helpProcess';
 import logger from './services/Logger';
 import mainProcess from './processes/mainProcess';
 import { ParsingError, ValidationError } from './services/Errors';
@@ -11,6 +12,10 @@ try {
 
   if (cliArgs.values.version) {
     await versionProcess();
+  }
+
+  if (cliArgs.values.help) {
+    helpProcess();
   }
 
   await mainProcess(cliArgs);
