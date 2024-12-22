@@ -24,7 +24,9 @@ async function mainProcess(cliArgs: CliArgs) {
     const version = await getVersion();
 
     logger.info('Welcome to Starlight to PDF tool! 📖');
-    logger.info(`version: ${version}\n`);
+    if (version) {
+      logger.info(`version: ${version}\n`);
+    }
 
     const baseUrl = cliArgs.values.url;
 

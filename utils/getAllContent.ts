@@ -88,8 +88,9 @@ async function getAllContent({
   exclude
 }: GetAllContentParams): Promise<GetAllContentReturn> {
   let parsedHtml = '';
+  const isExcluded = !!exclude && exclude.has(page.url());
 
-  if (!exclude.has(page.url())) {
+  if (!isExcluded) {
     logger.info(`Parsing page: ${page.url()}`);
     const { contents, html } = await processPageContent(page);
     contentsData.add(contents);
