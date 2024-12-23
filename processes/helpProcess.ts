@@ -24,7 +24,7 @@ Options:
 --path	-p	The directory path where the PDF will be saved. Default value is the current working directory.
 --pdf-outline	Generates an outline for the PDF file on the side. It's an \`outline\` property in Puppeteer's PDFOptions.
 --print-bg	Set to print background graphics. It's a \`printBackground\` property in Puppeteer's PDFOptions.
---timeout	Timeout for both the page actions and \`protocolTimeout\` in milliseconds. The default value is \`120000\` (2 minutes).
+--timeout	Timeout for both the page actions and \`protocolTimeout\` in milliseconds. You may need to increase this value for parsing large websites. The default value is \`120000\` (2 minutes).
 --version	-v	Displays the version of the tool and exits.
   `;
 

@@ -37,11 +37,11 @@ async function mainProcess(cliArgs: CliArgs) {
 
     browser = await puppeteer.launch({
       headless: true,
-      protocolTimeout: TIMEOUT_MS
+      protocolTimeout: cliArgs.values.timeout ?? TIMEOUT_MS
     });
     const page = await browser.newPage();
     await page.setViewport({ width: 799, height: 1150 });
-    page.setDefaultTimeout(TIMEOUT_MS);
+    page.setDefaultTimeout(cliArgs.values.timeout ?? TIMEOUT_MS);
     spinner.stop();
 
     const startUrl = await getStartingUrl({

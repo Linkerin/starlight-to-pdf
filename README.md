@@ -1,5 +1,12 @@
 # starlight-to-pdf
 
+[![npm version](https://img.shields.io/npm/v/starlight-to-pdf?style=for-the-badge&logo=npm&color=0B936A)](https://www.npmjs.com/package/starlight-to-pdf?activeTab=versions)
+[![npm](https://img.shields.io/npm/dw/starlight-to-pdf?style=for-the-badge&logo=npm&label=NPM)](https://www.npmjs.com/package/starlight-to-pdf?activeTab=readme)
+[![MIT License](https://img.shields.io/badge/License-MIT-%23A31F34?style=for-the-badge)](https://github.com/Linkerin/starlight-to-pdf/blob/main/LICENSE)
+[![TS Support](https://img.shields.io/github/languages/top/Linkerin/starlight-to-pdf?style=for-the-badge&logo=typescript)](https://github.com/search?q=repo%3ALinkerin%2Fstarlight-to-pdf++language%3ATypeScript&type=code)
+
+![starlight to pdf banner image](./readme_assets/starlight-to-pdf.svg)
+
 ## 📖 Description <a id="description"></a>
 
 A command-line tool for converting documentation websites built with
@@ -39,7 +46,7 @@ using the `--url` (or `-u`) flag.
 | `--path`          | `-p`  | `string`  | The directory path where the PDF will be saved. Default value is the current working directory.                                                                                                                           |
 | `--pdf-outline`   |       | `boolean` | Generates an outline for the PDF file on the side. It's an `outline` property in [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions).                                                                     |
 | `--print-bg`      |       | `boolean` | Set to print background graphics. It's a `printBackground` property in [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions/).                                                                              |
-| `--timeout`       |       | `string`  | Timeout for both the page actions and `protocolTimeout` in milliseconds. The default value is `180_000` (2 minutes).                                                                                                      |
+| `--timeout`       |       | `string`  | Timeout for both the page actions and `protocolTimeout` in milliseconds. You may need to increase this value for parsing large websites. The default value is `180_000` (2 minutes).                                      |
 | `--version`       | `-v`  | `boolean` | Displays the version of the tool and exits.                                                                                                                                                                               |
 
 Usage example:
