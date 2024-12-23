@@ -4,7 +4,7 @@ function helpProcess() {
   let helpMessage = `Starlight to PDF 📖
 
 Usage: npx starlight-to-pdf [options]
-    npx starlight-to-pdf [url] [options]
+       npx starlight-to-pdf [url] [options]
 
 Example: npx starlight-to-pdf spectrum.snipshot.dev -p ./output
          --filename spectrum-docs --contents-name "Table of contents"
