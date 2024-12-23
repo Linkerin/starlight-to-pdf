@@ -4,7 +4,7 @@ import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
 import { CLASSNAMES } from '../lib/constants';
 import type CliArgs from '../services/CliArgs';
 import getAllContent from '../utils/getAllContent';
-import getContents from '../utils/getContents';
+import createContents from '../utils/createContents';
 import getStartingUrl from '../utils/getStartingUrl';
 import { getVersion } from '../utils/version';
 import logger from '../services/Logger';
@@ -55,28 +55,28 @@ async function mainProcess(cliArgs: CliArgs) {
       contentsData: new Set(),
       exclude: cliArgs.values.exclude
     });
-    const contents = getContents(Array.from(contentsData), cliArgs);
+    const contents = createContents(Array.from(contentsData), cliArgs);
 
     const body = `<base href="${baseUrl.origin}" />
-                <style>
-                  aside,
-                  code,
-                  figure,
-                  pre {
-                    break-inside: avoid !important;
-                  }
+                  <style>
+                    aside,
+                    code,
+                    figure,
+                    pre {
+                      break-inside: avoid !important;
+                    }
 
-                  .${CLASSNAMES.pageBreak} {
-                    break-after: page;
+                    .${CLASSNAMES.pageBreak} {
+                      break-after: page;
+                    }
+                  </style>
+                  ${cliArgs.values['no-contents'] ? '' : contents}
+                  ${
+                    cliArgs.values.paddings
+                      ? `<style>@page { padding: ${cliArgs.values.paddings} }</style>`
+                      : ''
                   }
-                </style>
-                ${cliArgs.values['no-contents'] ? '' : contents}
-                ${
-                  cliArgs.values.paddings
-                    ? `<style>@page { padding: ${cliArgs.values.paddings} }</style>`
-                    : ''
-                }
-                ${htmlContent}
+                  ${htmlContent}
                `;
 
     logger.info('Adjusting content. It may take a while...');

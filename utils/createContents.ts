@@ -26,7 +26,7 @@ function composeListEl(contentData: Contents[]): string {
   return result;
 }
 
-function getContents(contentData: Contents[], cliArgs: CliArgs): string {
+function createContents(contentData: Contents[], cliArgs: CliArgs): string {
   const list = composeListEl(contentData);
   const defaultContentsName = 'Contents';
   const contentsName = cliArgs.values['contents-name'] ?? defaultContentsName;
@@ -45,4 +45,4 @@ function getContents(contentData: Contents[], cliArgs: CliArgs): string {
           </div>`;
 }
 
-export default getContents;
+export default createContents;

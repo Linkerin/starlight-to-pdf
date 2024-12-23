@@ -1,6 +1,6 @@
 import type { Page } from 'puppeteer';
 
-import type { Contents } from './getContents';
+import type { Contents } from './createContents';
 import { CLASSNAMES, SELECTORS } from '../lib/constants';
 import errorCatcher from './errorCatcher';
 import getNextUrl from './getNextUrl';
@@ -73,7 +73,7 @@ interface GetAllContentParams {
   htmlContent: string;
   contentsData: Set<Contents>;
   page: Page;
-  exclude: Set<string>;
+  exclude?: Set<string>;
 }
 
 type GetAllContentReturn = Pick<

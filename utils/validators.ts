@@ -26,6 +26,18 @@ const validators = {
     return true;
   },
 
+  isExclude(value: unknown, key: string): value is string[] {
+    if (!Array.isArray(value)) {
+      throw new ValidationError(`\`--${key}\` values must result in an array.`);
+    }
+
+    for (const element of value) {
+      if (!validators.isString(element, key)) return false;
+    }
+
+    return true;
+  },
+
   isFilename(name: unknown, key: string): name is string {
     if (!validators.isString(name, key)) return false;
 

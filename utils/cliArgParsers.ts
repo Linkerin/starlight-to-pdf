@@ -28,28 +28,36 @@ const parsers = {
     return new URL(userUrl);
   },
 
-  exclude: (value: string, url?: string): Set<string> => {
-    const excludeValues = value.split(' ');
+  exclude: (values: string[], url?: URL): Set<string> => {
     if (!url) {
       throw new ValidationError('Base URL is required to parse excludes');
     }
 
-    const urlObj = parsers.url(url);
+    if (!values || values.length === 0) {
+      throw new ValidationError(
+        'Provided excluded URLs resulted in an empty array.'
+      );
+    }
+
     const excludeUrls: Set<string> = new Set();
+    const origin = url.origin;
 
-    for (const excludeValue of excludeValues) {
-      if (!URL.canParse(excludeValue, urlObj)) {
-        throw new ValidationError(
-          `Invalid URL path as exclude value: '${excludeValue}'.`
-        );
+    for (const value of values) {
+      const excludeValues = value.split(' ');
+      for (const excludeValue of excludeValues) {
+        if (!URL.canParse(excludeValue, origin)) {
+          throw new ValidationError(
+            `Invalid URL path as exclude value: '${excludeValue}'.`
+          );
+        }
+
+        const excludeUrl = new URL(excludeValue, origin);
+        const href =
+          excludeUrl.href.at(-1) === '/'
+            ? excludeUrl.href
+            : excludeUrl.href + '/';
+        excludeUrls.add(href);
       }
-
-      const excludeUrl = new URL(excludeValue, urlObj);
-      const href =
-        excludeUrl.href.at(-1) === '/'
-          ? excludeUrl.href
-          : excludeUrl.href + '/';
-      excludeUrls.add(href);
     }
 
     return excludeUrls;

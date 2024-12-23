@@ -1,86 +1,104 @@
 import { parseArgs } from 'util';
 
-import type { CliOption, CliValue, CliValuesObj } from '../lib/types/cli.types';
+import type { CliValue, CliValuesObj } from '../lib/types/cli.types';
 import parsers from '../utils/cliArgParsers';
 import { ValidationError } from './Errors';
 import validators from '../utils/validators';
 
-const cliOptions: CliOption = {
+const cliOptions = {
   url: {
-    type: 'string',
-    short: 'u',
     validate: validators.isUrl,
     parse: parsers.url
   },
   'contents-name': {
-    type: 'string',
     validate: validators.isString
   },
   exclude: {
-    type: 'string',
-    short: 'e',
-    validate: validators.isString,
+    validate: validators.isExclude,
     parse: parsers.exclude
   },
   filename: {
-    type: 'string',
-    short: 'f',
     validate: validators.isFilename
   },
   format: {
-    type: 'string',
     validate: validators.isFormat
   },
   help: {
-    type: 'boolean',
-    short: 'h',
     validate: validators.isBoolean
   },
   margins: {
-    type: 'string',
-    short: 'm',
     validate: validators.isSpacing
   },
   'no-contents': {
-    type: 'boolean',
     validate: validators.isBoolean
   },
   paddings: {
-    type: 'string',
     validate: validators.isSpacing
   },
   path: {
-    type: 'string',
-    short: 'p',
     validate: validators.isPath
   },
   'print-bg': {
-    type: 'boolean',
     validate: validators.isBoolean
   },
   version: {
-    type: 'boolean',
-    short: 'V',
     validate: validators.isBoolean
   }
 };
 
-// TODO: solve typing issues, they are not properly inferred
 class CliArgs {
-  private _values: CliValuesObj = {} as CliValuesObj;
+  private _values: CliValuesObj = {};
   private _positionals;
 
   constructor() {
     try {
       const { values, positionals } = parseArgs({
         args: process.argv,
-        options: Object.entries(cliOptions).reduce((acc, [key, opt]) => {
-          acc[key as CliValue] = { type: opt.type };
-          if (opt.short) {
-            acc[key as CliValue].short = opt.short;
+        options: {
+          url: {
+            type: 'string',
+            short: 'u'
+          },
+          'contents-name': {
+            type: 'string'
+          },
+          exclude: {
+            type: 'string',
+            short: 'e',
+            multiple: true
+          },
+          filename: {
+            type: 'string',
+            short: 'f'
+          },
+          format: {
+            type: 'string'
+          },
+          help: {
+            type: 'boolean',
+            short: 'h'
+          },
+          margins: {
+            type: 'string'
+          },
+          'no-contents': {
+            type: 'boolean'
+          },
+          paddings: {
+            type: 'string'
+          },
+          path: {
+            type: 'string',
+            short: 'p'
+          },
+          'print-bg': {
+            type: 'boolean'
+          },
+          version: {
+            type: 'boolean',
+            short: 'v'
           }
-          return acc;
-        }, {} as Record<CliValue, Pick<CliOption[keyof CliOption], 'type' | 'short'>>),
+        },
         strict: true,
         allowPositionals: true
       });
@@ -95,35 +113,35 @@ class CliArgs {
         values.url = positionals.at(2);
       }
 
-      if (!values.url && !values.help && !values.version) {
-        throw new ValidationError(
-          'URL for parsing is required. Provide `--url` argument value.'
-        );
-      }
+      // `url` is always the first key for processing
+      const valueKeys = Object.keys(values).sort((a, b) =>
+        a === 'url' ? -1 : b === 'url' ? 1 : 0
+      ) as CliValue[];
 
-      for (const [key, value] of Object.entries(values)) {
+      for (const key of valueKeys) {
+        const value = values[key];
         if (!value) continue;
-        const flag = key as CliValue;
-        const option = cliOptions[flag];
-        const isValid = option.validate(value, key);
+
+        const isValid = cliOptions[key].validate(value, key);
         if (!isValid) {
-          throw new ValidationError(
-            `Invalid value provided for \`--${flag}\`.`
-          );
+          throw new ValidationError(`Invalid value provided for \`--${key}\`.`);
         }
 
-        if (!option.parse) {
-          this._values[flag] = value as any;
-          continue;
-        }
+        switch (key) {
+          case 'url':
+            this._values.url = cliOptions.url.parse(value as string);
+            break;
 
-        if (flag === 'exclude') {
-          this._values[flag] = option.parse(
-            value as string,
-            values.url as string
-          ) as any;
-        } else {
-          this._values[flag] = option.parse(value as string) as any;
+          case 'exclude':
+            this._values.exclude = cliOptions.exclude.parse(
+              value as string[],
+              this._values.url
+            );
+            break;
+
+          default:
+            this._values[key] = value as any;
+            break;
         }
       }
     } catch (err) {
@@ -141,7 +159,8 @@ class CliArgs {
       throw err;
     }
   }
-  get values(): CliValuesObj {
+
+  get values() {
     return this._values;
   }
 
