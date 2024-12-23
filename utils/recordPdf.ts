@@ -5,7 +5,7 @@ import type { Page, PaperFormat, PDFOptions } from 'puppeteer';
 
 import type CliArgs from '../services/CliArgs';
 import errorCatcher from './errorCatcher';
-import logger from '../services/Logger';
+import logger from '../services/logger';
 import { ParsingError } from '../services/Errors';
 
 interface RecordPdfParams {
@@ -47,7 +47,8 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
       right: margins[1],
       bottom: margins[2],
       left: margins[3]
-    }
+    },
+    outline: cliArgs.values['pdf-outline'] ?? false
   };
 
   const [error] = await errorCatcher(page.pdf(pdfOptions));

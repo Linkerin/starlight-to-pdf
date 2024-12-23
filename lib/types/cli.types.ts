@@ -9,7 +9,9 @@ export type CliValuesObj = {
   'no-contents'?: string;
   paddings?: string;
   path?: string;
+  'pdf-outline'?: boolean;
   'print-bg'?: boolean;
+  timeout?: number;
   version?: boolean;
 };
 

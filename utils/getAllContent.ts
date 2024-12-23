@@ -4,7 +4,8 @@ import type { Contents } from './createContents';
 import { CLASSNAMES, SELECTORS } from '../lib/constants';
 import errorCatcher from './errorCatcher';
 import getNextUrl from './getNextUrl';
-import logger from '../services/Logger';
+import gotoWithRetry from './gotoWithRetry';
+import logger from '../services/logger';
 import { ParsingError } from '../services/Errors';
 
 interface ProcessPageContentReturn {
@@ -110,7 +111,7 @@ async function getAllContent({
     };
   }
 
-  await page.goto(nextUrl.href, { waitUntil: 'domcontentloaded' });
+  await gotoWithRetry(page, nextUrl.href, { waitUntil: 'domcontentloaded' });
 
   return getAllContent({
     htmlContent: updatedHtmlContent,

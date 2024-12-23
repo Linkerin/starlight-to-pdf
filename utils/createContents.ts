@@ -1,7 +1,7 @@
 import { CLASSNAMES } from '../lib/constants';
 import type CliArgs from '../services/CliArgs';
 
-import logger from '../services/Logger';
+import logger from '../services/logger';
 
 export interface Contents {
   heading: string;

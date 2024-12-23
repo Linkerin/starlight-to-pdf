@@ -1,4 +1,4 @@
-import logger from '../services/Logger';
+import logger from '../services/logger';
 
 function helpProcess() {
   let helpMessage = `Starlight to PDF 📖
@@ -22,7 +22,9 @@ Options:
 --no-contents	Disables the table of contents in the generated PDF.
 --paddings	Sets padding for the PDF content. They must be provided as a string with 4 values separates by space, reflecting the top, right, bottom and left paddings respectively. Paddings are disabled by default.
 --path	-p	The directory path where the PDF will be saved. Default value is the current working directory.
+--pdf-outline	Generates an outline for the PDF file on the side. It's an \`outline\` property in Puppeteer's PDFOptions.
 --print-bg	Set to print background graphics. It's a \`printBackground\` property in Puppeteer's PDFOptions.
+--timeout	Timeout for both the page actions and \`protocolTimeout\` in milliseconds. The default value is \`120000\` (2 minutes).
 --version	-v	Displays the version of the tool and exits.
   `;
 

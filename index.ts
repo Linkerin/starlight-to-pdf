@@ -2,7 +2,7 @@
 
 import CliArgs from './services/CliArgs';
 import helpProcess from './processes/helpProcess';
-import logger from './services/Logger';
+import logger from './services/logger';
 import mainProcess from './processes/mainProcess';
 import { ParsingError, ValidationError } from './services/Errors';
 import versionProcess from './processes/versionProcess';

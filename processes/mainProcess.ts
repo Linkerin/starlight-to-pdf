@@ -1,13 +1,13 @@
 import puppeteer, { Browser } from 'puppeteer';
 import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
 
-import { CLASSNAMES } from '../lib/constants';
+import { CLASSNAMES, TIMEOUT_MS } from '../lib/constants';
 import type CliArgs from '../services/CliArgs';
 import getAllContent from '../utils/getAllContent';
 import createContents from '../utils/createContents';
 import getStartingUrl from '../utils/getStartingUrl';
 import { getVersion } from '../utils/version';
-import logger from '../services/Logger';
+import logger from '../services/logger';
 import recordPdf from '../utils/recordPdf';
 import { ParsingError, ValidationError } from '../services/Errors';
 
@@ -32,10 +32,13 @@ async function mainProcess(cliArgs: CliArgs) {
 
     const startTime = performance.now();
 
-    browser = await puppeteer.launch({ headless: true });
+    browser = await puppeteer.launch({
+      headless: true,
+      protocolTimeout: TIMEOUT_MS
+    });
     const page = await browser.newPage();
     await page.setViewport({ width: 799, height: 1150 });
-    page.setDefaultTimeout(60000);
+    page.setDefaultTimeout(TIMEOUT_MS);
 
     const startUrl = await getStartingUrl({
       page,

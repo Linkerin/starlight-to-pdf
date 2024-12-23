@@ -1,7 +1,7 @@
 import { parseArgs } from 'util';
 
 import type { CliValue, CliValuesObj } from '../lib/types/cli.types';
-import parsers from '../utils/cliArgParsers';
+import parsers from '../utils/parsers';
 import { ValidationError } from './Errors';
 import validators from '../utils/validators';
 
@@ -38,8 +38,15 @@ const cliOptions = {
   path: {
     validate: validators.isPath
   },
+  'pdf-outline': {
+    validate: validators.isBoolean
+  },
   'print-bg': {
     validate: validators.isBoolean
+  },
+  timeout: {
+    validate: validators.isString,
+    parse: parsers.timeout
   },
   version: {
     validate: validators.isBoolean
@@ -91,8 +98,15 @@ class CliArgs {
             type: 'string',
             short: 'p'
           },
+          'pdf-outline': {
+            type: 'boolean',
+            default: false
+          },
           'print-bg': {
             type: 'boolean'
+          },
+          timeout: {
+            type: 'string'
           },
           version: {
             type: 'boolean',
@@ -137,6 +151,10 @@ class CliArgs {
               value as string[],
               this._values.url
             );
+            break;
+
+          case 'timeout':
+            this._values.timeout = cliOptions.timeout.parse(value as string);
             break;
 
           default:

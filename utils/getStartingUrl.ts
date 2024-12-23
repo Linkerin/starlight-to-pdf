@@ -1,9 +1,8 @@
 import type { Page } from 'puppeteer';
 
-import errorCatcher from './errorCatcher';
 import getNextUrl from './getNextUrl';
-import logger from '../services/Logger';
-import { ParsingError } from '../services/Errors';
+import gotoWithRetry from './gotoWithRetry';
+import logger from '../services/logger';
 
 interface GetNextUrlParams {
   initialSearch?: boolean;
@@ -16,15 +15,7 @@ async function getStartingUrl({
   page,
   url
 }: GetNextUrlParams): Promise<URL | null> {
-  const [error] = await errorCatcher(page.goto(url.href));
-
-  if (error) {
-    throw new ParsingError(`Error occured while fetching '${url.href}.'`, {
-      originalErrorMessage: error.message
-    });
-    // TODO: handle retries
-  }
-
+  await gotoWithRetry(page, url.href);
   const nextUrl = await getNextUrl(page);
 
   if (nextUrl) return url;

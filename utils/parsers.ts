@@ -1,4 +1,4 @@
-import logger from '../services/Logger';
+import logger from '../services/logger';
 import { ValidationError } from '../services/Errors';
 
 const parsers = {
@@ -61,6 +61,22 @@ const parsers = {
     }
 
     return excludeUrls;
+  },
+
+  timeout: (timeout: string): number => {
+    if (!timeout) {
+      throw new ValidationError('Timeout value is required for parsing.');
+    }
+
+    const parsedTimeout = parseInt(timeout, 10);
+
+    if (isNaN(parsedTimeout)) {
+      throw new ValidationError(
+        `Invalid timeout value provided. It must be a string representing a number.`
+      );
+    }
+
+    return parsedTimeout;
   }
 };
 

@@ -37,7 +37,9 @@ using the `--url` (or `-u`) flag.
 | `--no-contents`   |       | `boolean` | Disables the table of contents in the generated PDF.                                                                                                                                                                      |
 | `--paddings`      |       | `string`  | Sets padding for the PDF content. They must be provided as a string with 4 values separates by `space`, reflecting the top, right, bottom and left paddings respectively. Paddings are disabled by default.               |
 | `--path`          | `-p`  | `string`  | The directory path where the PDF will be saved. Default value is the current working directory.                                                                                                                           |
+| `--pdf-outline`   |       | `boolean` | Generates an outline for the PDF file on the side. It's an `outline` property in [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions).                                                                     |
 | `--print-bg`      |       | `boolean` | Set to print background graphics. It's a `printBackground` property in [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions/).                                                                              |
+| `--timeout`       |       | `string`  | Timeout for both the page actions and `protocolTimeout` in milliseconds. The default value is `180_000` (2 minutes).                                                                                                      |
 | `--version`       | `-v`  | `boolean` | Displays the version of the tool and exits.                                                                                                                                                                               |
 
 Usage example:

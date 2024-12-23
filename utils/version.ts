@@ -2,7 +2,7 @@ import { resolve } from 'path';
 import { readFile } from 'fs/promises';
 
 import errorCatcher from './errorCatcher';
-import logger from '../services/Logger';
+import logger from '../services/logger';
 
 export async function getVersion(): Promise<string | null> {
   const packagePath = resolve(__dirname, '../package.json');
