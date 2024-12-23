@@ -2,6 +2,7 @@ import { existsSync } from 'fs';
 import { mkdir } from 'fs/promises';
 import path from 'path';
 import type { Page, PaperFormat, PDFOptions } from 'puppeteer';
+import type { Spinner } from 'yocto-spinner';
 
 import type CliArgs from '../services/CliArgs';
 import errorCatcher from './errorCatcher';
@@ -12,10 +13,17 @@ interface RecordPdfParams {
   cliArgs: CliArgs;
   hostname: string;
   page: Page;
+  spinner: Spinner;
 }
 
-async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
+async function recordPdf({
+  cliArgs,
+  hostname,
+  page,
+  spinner
+}: RecordPdfParams) {
   logger.info('Generating PDF. Please wait.');
+  spinner.start();
 
   const filename = `${cliArgs.values.filename ?? hostname}.pdf`;
   const margins = cliArgs.values.margins?.split(' ') ?? [
@@ -35,7 +43,9 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
       );
     }
 
+    spinner.stop();
     logger.info(`Created the PDF target directory: '${dirPath}'.`);
+    spinner.start();
   }
 
   const pdfOptions: PDFOptions = {
@@ -60,6 +70,7 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
     );
   }
 
+  spinner.stop();
   logger.success(`PDF file was generated and saved to '${pdfOptions.path}'.\n`);
 
   return pdfOptions;

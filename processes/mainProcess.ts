@@ -1,5 +1,6 @@
 import puppeteer, { Browser } from 'puppeteer';
 import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
+import yoctoSpinner from 'yocto-spinner';
 
 import { CLASSNAMES, TIMEOUT_MS } from '../lib/constants';
 import type CliArgs from '../services/CliArgs';
@@ -13,6 +14,7 @@ import { ParsingError, ValidationError } from '../services/Errors';
 
 async function mainProcess(cliArgs: CliArgs) {
   let browser: Browser | null = null;
+  const spinner = yoctoSpinner();
 
   try {
     if (!cliArgs.values.url) {
@@ -28,6 +30,7 @@ async function mainProcess(cliArgs: CliArgs) {
       logger.info(`version: ${version}\n`);
     }
 
+    spinner.start();
     const baseUrl = cliArgs.values.url;
 
     const startTime = performance.now();
@@ -39,6 +42,7 @@ async function mainProcess(cliArgs: CliArgs) {
     const page = await browser.newPage();
     await page.setViewport({ width: 799, height: 1150 });
     page.setDefaultTimeout(TIMEOUT_MS);
+    spinner.stop();
 
     const startUrl = await getStartingUrl({
       page,
@@ -83,7 +87,7 @@ async function mainProcess(cliArgs: CliArgs) {
                `;
 
     logger.info('Adjusting content. It may take a while...');
-
+    spinner.start();
     await page.goto(startUrl.href, {
       waitUntil: 'networkidle2'
     });
@@ -93,8 +97,9 @@ async function mainProcess(cliArgs: CliArgs) {
       return body.innerHTML;
     }, body);
     await scrollPageToBottom(page, { size: 1100 });
+    spinner.stop();
 
-    await recordPdf({ cliArgs, hostname: baseUrl.hostname, page });
+    await recordPdf({ cliArgs, hostname: baseUrl.hostname, page, spinner });
 
     await browser.close();
 
@@ -106,6 +111,7 @@ async function mainProcess(cliArgs: CliArgs) {
 
     process.exit(0);
   } catch (err) {
+    spinner.stop();
     if (browser) {
       await browser.close();
     }
