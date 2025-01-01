@@ -1,7 +1,7 @@
 import type { GoToOptions, Page } from 'puppeteer';
 
 import errorCatcher from './errorCatcher';
-import logger from '../services/logger';
+import { logger } from '../services/Logger';
 import { ParsingError } from '../services/Errors';
 
 async function gotoWithRetry(page: Page, href: string, options?: GoToOptions) {

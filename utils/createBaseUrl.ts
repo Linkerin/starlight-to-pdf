@@ -1,4 +1,4 @@
-import logger from '../services/logger';
+import { logger } from '../services/Logger';
 
 function createBaseUrl(url: string): URL | null {
   const httpRegex = /^(https?:\/\/)/;

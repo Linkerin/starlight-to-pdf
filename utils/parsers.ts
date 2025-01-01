@@ -1,4 +1,4 @@
-import logger from '../services/logger';
+import { logger } from '../services/Logger';
 import { ValidationError } from '../services/Errors';
 
 const parsers = {

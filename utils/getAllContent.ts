@@ -5,7 +5,7 @@ import { CLASSNAMES, SELECTORS } from '../lib/constants';
 import errorCatcher from './errorCatcher';
 import getNextUrl from './getNextUrl';
 import gotoWithRetry from './gotoWithRetry';
-import logger from '../services/logger';
+import { logger } from '../services/Logger';
 import { ParsingError } from '../services/Errors';
 
 interface ProcessPageContentReturn {

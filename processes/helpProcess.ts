@@ -1,4 +1,4 @@
-import logger from '../services/logger';
+import { logger } from '../services/Logger';
 
 function helpProcess() {
   let helpMessage = `Starlight to PDF 📖
@@ -29,6 +29,7 @@ Options:
   `;
 
   logger.info(helpMessage);
+  logger.stop();
 
   process.exit(0);
 }

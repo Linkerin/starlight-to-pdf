@@ -2,7 +2,7 @@ import type { Page } from 'puppeteer';
 
 import getNextUrl from './getNextUrl';
 import gotoWithRetry from './gotoWithRetry';
-import logger from '../services/logger';
+import { logger } from '../services/Logger';
 
 interface GetNextUrlParams {
   initialSearch?: boolean;
