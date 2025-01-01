@@ -1,7 +1,11 @@
 import type { Page } from 'puppeteer';
 
-import type { Contents } from './createContents';
 import { CLASSNAMES, SELECTORS } from '../lib/constants';
+import type {
+  Contents,
+  GetAllContentParams,
+  GetAllContentReturn
+} from '../lib/types/common.types';
 import errorCatcher from './errorCatcher';
 import getNextUrl from './getNextUrl';
 import gotoWithRetry from './gotoWithRetry';
@@ -69,18 +73,6 @@ async function processPageContent(
 
   return { contents, html };
 }
-
-interface GetAllContentParams {
-  htmlContent: string;
-  contentsData: Set<Contents>;
-  page: Page;
-  exclude?: Set<string>;
-}
-
-type GetAllContentReturn = Pick<
-  GetAllContentParams,
-  'contentsData' | 'htmlContent'
->;
 
 async function getAllContent({
   contentsData,

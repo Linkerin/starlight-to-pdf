@@ -1,15 +1,15 @@
 import puppeteer, { Browser } from 'puppeteer';
 import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
 
-import { CLASSNAMES, TIMEOUT_MS } from '../lib/constants';
 import type CliArgs from '../services/CliArgs';
 import getAllContent from '../utils/getAllContent';
-import createContents from '../utils/createContents';
+import composeBody from '../utils/composeBody';
 import getStartingUrl from '../utils/getStartingUrl';
 import getVersion from '../utils/getVersion';
 import { logger } from '../services/Logger';
-import recordPdf from '../utils/recordPdf';
 import { ParsingError, ValidationError } from '../services/Errors';
+import recordPdf from '../utils/recordPdf';
+import { TIMEOUT_MS } from '../lib/constants';
 
 async function mainProcess(cliArgs: CliArgs) {
   let browser: Browser | null = null;
@@ -59,29 +59,13 @@ async function mainProcess(cliArgs: CliArgs) {
       contentsData: new Set(),
       exclude: cliArgs.values.exclude
     });
-    const contents = createContents(Array.from(contentsData), cliArgs);
 
-    const body = `<base href="${baseUrl.origin}" />
-                  <style>
-                    aside,
-                    code,
-                    figure,
-                    pre {
-                      break-inside: avoid !important;
-                    }
-
-                    .${CLASSNAMES.pageBreak} {
-                      break-after: page;
-                    }
-                  </style>
-                  ${cliArgs.values['no-contents'] ? '' : contents}
-                  ${
-                    cliArgs.values.paddings
-                      ? `<style>@page { padding: ${cliArgs.values.paddings} }</style>`
-                      : ''
-                  }
-                  ${htmlContent}
-               `;
+    const body = composeBody({
+      baseOrigin: baseUrl.origin,
+      cliArgs,
+      contentsData,
+      htmlContent
+    });
 
     logger.info('Adjusting content. It may take a while...');
     await page.goto(startUrl.href, {
