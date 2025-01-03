@@ -4,6 +4,7 @@ import path from 'path';
 import type { Page, PaperFormat, PDFOptions } from 'puppeteer';
 
 import type CliArgs from '../services/CliArgs';
+import { cliColor, cliLink } from './cliStylings';
 import errorCatcher from './errorCatcher';
 import { logger } from '../services/Logger';
 import { ParsingError } from '../services/Errors';
@@ -15,7 +16,9 @@ interface RecordPdfParams {
 }
 
 async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
-  logger.info('Generating PDF. Please wait.');
+  logger.info(
+    cliColor('Generating PDF. Please wait.', 'black', { bright: true })
+  );
 
   const filename = `${cliArgs.values.filename ?? hostname}.pdf`;
   const margins = cliArgs.values.margins?.split(' ') ?? [
@@ -30,12 +33,14 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
     const [mkdirError] = await errorCatcher(mkdir(dirPath));
     if (mkdirError) {
       throw new ParsingError(
-        `Couldn't create the PDF target directory: '${dirPath}'. The program aborts.`,
+        `Couldn't create the PDF target directory: ${cliLink(
+          dirPath
+        )}. The program aborts.`,
         { originalErrorMessage: mkdirError.message }
       );
     }
 
-    logger.info(`Created the PDF target directory: '${dirPath}'.`);
+    logger.info(`Created the PDF target directory: ${cliLink(dirPath)}.`);
   }
 
   const pdfOptions: PDFOptions = {
@@ -55,12 +60,16 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
 
   if (error) {
     throw new ParsingError(
-      `PDF generation failed. Target directory: ${pdfOptions.path}.`,
+      `PDF generation failed. Target directory: ${cliLink(
+        pdfOptions.path ?? ''
+      )}.`,
       { originalErrorMessage: error.message }
     );
   }
 
-  logger.success(`PDF file was generated and saved to '${pdfOptions.path}'.\n`);
+  logger.success(
+    `PDF file was generated and saved to ${cliLink(pdfOptions.path ?? '')}.\n`
+  );
 
   return pdfOptions;
 }

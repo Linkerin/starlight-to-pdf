@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import CliArgs from './services/CliArgs';
+import { cliColor } from './utils/cliStylings';
 import helpProcess from './processes/helpProcess';
 import { logger } from './services/Logger';
 import mainProcess from './processes/mainProcess';
@@ -32,7 +33,7 @@ try {
     }
   }
 
-  logger.error('Program exits.');
+  logger.error(cliColor('Program exits.', 'black', { bright: true }));
 
   process.exit(1);
 }

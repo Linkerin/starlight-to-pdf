@@ -1,5 +1,15 @@
 import type { Page } from 'puppeteer';
 
+export type CliColor =
+  | 'red'
+  | 'green'
+  | 'yellow'
+  | 'blue'
+  | 'magenta'
+  | 'cyan'
+  | 'white'
+  | 'black';
+
 export interface Contents {
   heading: string;
   url: string;

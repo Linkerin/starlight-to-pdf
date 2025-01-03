@@ -1,6 +1,10 @@
 import yoctoSpinner, { type Spinner } from 'yocto-spinner';
 
+import { CLI_STYLES } from '../lib/constants';
+
 type Tag = 'INFO' | 'WARN' | 'ERROR' | 'SUCCESS';
+
+const { escapeSeq, reset, bold, color } = CLI_STYLES;
 
 class Logger {
   private _spinner: Spinner;
@@ -10,15 +14,20 @@ class Logger {
     this._spinner = spinner.clear();
   }
 
-  private _resetStyles: string = '\x1b[0m';
+  private _resetStyles: string = reset;
 
-  private _infoStyles: string = '\x1b[36m%s' + this._resetStyles; // cyan
+  private _infoStyles: string =
+    `${escapeSeq}${color.fg}${color.cyan}m%s` + this._resetStyles; // cyan
 
-  private _errorStyles: string = '\x1b[1;41;37m%s' + this._resetStyles; // white on light red
+  private _errorStyles: string =
+    `${escapeSeq}${bold};${color.fg}${color.white};${color.bg}${color.red}m%s` +
+    this._resetStyles; // white on light red
 
-  private _warnStyles: string = '\x1b[33m%s' + this._resetStyles; // yellow
+  private _warnStyles: string =
+    `${escapeSeq}${color.fg}${color.yellow}m%s` + this._resetStyles; // yellow
 
-  private _successStyles: string = '\x1b[32m%s' + this._resetStyles; // green
+  private _successStyles: string =
+    `${escapeSeq}${color.fg}${color.green}m%s` + this._resetStyles; // green
 
   private _logMessage(tag: Tag, ...args: unknown[]): void {
     let styles: string;

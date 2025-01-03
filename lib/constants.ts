@@ -19,6 +19,28 @@ export const CLASSNAMES = {
   }
 } as const;
 
+export const CLI_STYLES = {
+  escapeSeq: '\x1b[',
+  end: 'm',
+  reset: '\x1b[0m',
+  bold: '1',
+  underline: '4',
+  color: {
+    fg: '3',
+    bg: '4',
+    brightFg: '9',
+    brightBg: '10',
+    black: '0',
+    red: '1',
+    green: '2',
+    yellow: '3',
+    blue: '4',
+    magenta: '5',
+    cyan: '6',
+    white: '7'
+  }
+} as const;
+
 export const SELECTORS = {
   heading: '*:has(> h1#_top)',
   mainInfo: `.${CLASSNAMES.starlight.markdownContent}`,

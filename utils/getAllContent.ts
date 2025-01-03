@@ -1,6 +1,7 @@
 import type { Page } from 'puppeteer';
 
 import { CLASSNAMES, SELECTORS } from '../lib/constants';
+import { cliColor, cliLink, cliTextStyle } from './cliStylings';
 import type {
   Contents,
   GetAllContentParams,
@@ -81,13 +82,18 @@ async function getAllContent({
   exclude
 }: GetAllContentParams): Promise<GetAllContentReturn> {
   let parsedHtml = '';
-  const isExcluded = !!exclude && exclude.has(page.url());
+  const currUrl = page.url();
+  const isExcluded = !!exclude && exclude.has(currUrl);
 
   if (!isExcluded) {
-    logger.info(`Parsing page: ${page.url()}`);
+    logger.info(
+      cliColor(`Parsing page: ${cliLink(currUrl)}`, 'black', { bright: true })
+    );
     const { contents, html } = await processPageContent(page);
     contentsData.add(contents);
     parsedHtml = html;
+  } else {
+    logger.info(`Page excluded: ${cliLink(currUrl)}`);
   }
 
   const updatedHtmlContent = htmlContent + parsedHtml;
@@ -95,7 +101,14 @@ async function getAllContent({
   const nextUrl = await getNextUrl(page);
   if (!nextUrl) {
     logger.info(
-      `All pages were parsed. Web pages total: ${contentsData.size}.\n`
+      cliColor(
+        `All pages were parsed. Web pages total: ${cliTextStyle(
+          contentsData.size,
+          'bold'
+        )}.\n`,
+        'black',
+        { bright: true }
+      )
     );
     return {
       htmlContent: updatedHtmlContent,

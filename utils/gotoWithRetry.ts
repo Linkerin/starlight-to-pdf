@@ -1,5 +1,6 @@
 import type { GoToOptions, Page } from 'puppeteer';
 
+import { cliLink, cliTextStyle } from './cliStylings';
 import errorCatcher from './errorCatcher';
 import { logger } from '../services/Logger';
 import { ParsingError } from '../services/Errors';
@@ -13,7 +14,9 @@ async function gotoWithRetry(page: Page, href: string, options?: GoToOptions) {
 
     if (error && numOfTries > 0) {
       logger.warn(
-        `Error occured while fetching '${href}'. Retries left: ${numOfTries}. Retrying...`
+        `Error occured while fetching ${cliLink(
+          href
+        )}. Retries left: ${cliTextStyle(numOfTries, 'bold')}. Retrying...`
       );
       numOfTries--;
     } else {

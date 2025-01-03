@@ -1,3 +1,4 @@
+import { cliLink, cliTextStyle } from './cliStylings';
 import { logger } from '../services/Logger';
 import { ValidationError } from '../services/Errors';
 
@@ -15,7 +16,10 @@ const parsers = {
     if (!match) {
       userUrl = 'https://' + url;
       logger.warn(
-        `Protocol is not specified. Defaulting to HTTPS. Resulting URL: ${userUrl}`
+        `Protocol is not specified. Defaulting to ${cliTextStyle(
+          'HTTPS',
+          'bold'
+        )}. Resulting URL: ${cliLink(userUrl)}`
       );
     }
 

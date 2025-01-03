@@ -1,8 +1,8 @@
 import { CLASSNAMES } from '../lib/constants';
 import type CliArgs from '../services/CliArgs';
-import { logger } from '../services/Logger';
-
+import { cliColor, cliTextStyle } from './cliStylings';
 import type { Contents, GetAllContentReturn } from '../lib/types/common.types';
+import { logger } from '../services/Logger';
 
 function composeListEl(contentData: Contents[]): string {
   let contentsHtml = '';
@@ -29,7 +29,10 @@ function createContents(contentData: Contents[], cliArgs: CliArgs): string {
   logger.info(
     `Created table of contents.${
       contentsName !== defaultContentsName
-        ? ` User defined name: '${contentsName}'`
+        ? ` User defined name: ${cliColor(
+            cliTextStyle(contentsName, 'bold'),
+            'yellow'
+          )}`
         : ''
     }`
   );

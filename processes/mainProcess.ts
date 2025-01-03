@@ -2,14 +2,21 @@ import puppeteer, { Browser } from 'puppeteer';
 import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
 
 import type CliArgs from '../services/CliArgs';
-import getAllContent from '../utils/getAllContent';
+import { cliColor, cliLink, cliTextStyle } from '../utils/cliStylings';
 import composeBody from '../utils/composeBody';
+import getAllContent from '../utils/getAllContent';
 import getStartingUrl from '../utils/getStartingUrl';
 import getVersion from '../utils/getVersion';
 import { logger } from '../services/Logger';
 import { ParsingError, ValidationError } from '../services/Errors';
 import recordPdf from '../utils/recordPdf';
 import { TIMEOUT_MS } from '../lib/constants';
+
+const cliToolName = `${cliColor('Starlight', 'yellow', {
+  bright: true
+})} ${cliColor('to', 'black', {
+  bright: true
+})} ${cliColor('PDF', 'red', { bright: true })}`;
 
 async function mainProcess(cliArgs: CliArgs) {
   let browser: Browser | null = null;
@@ -24,9 +31,13 @@ async function mainProcess(cliArgs: CliArgs) {
     const version = await getVersion();
 
     logger.start();
-    logger.info('Welcome to Starlight to PDF tool! 📖');
+    logger.info(`Welcome to ${cliToolName} tool! 📖`);
     if (version) {
-      logger.info(`version: ${version}\n`);
+      logger.info(
+        cliColor(`version: ${version}\n`, 'black', {
+          bright: true
+        })
+      );
     }
 
     const baseUrl = cliArgs.values.url;
@@ -51,7 +62,9 @@ async function mainProcess(cliArgs: CliArgs) {
       );
     }
 
-    logger.info(`Docs content was found. Starting page: ${startUrl.href}\n`);
+    logger.info(
+      `Docs content was found. Starting page: ${cliLink(startUrl.href)}\n`
+    );
 
     const { htmlContent, contentsData } = await getAllContent({
       page,
@@ -67,7 +80,11 @@ async function mainProcess(cliArgs: CliArgs) {
       htmlContent
     });
 
-    logger.info('Adjusting content. It may take a while...');
+    logger.info(
+      cliColor('Adjusting content. It may take a while...', 'black', {
+        bright: true
+      })
+    );
     await page.goto(startUrl.href, {
       waitUntil: 'networkidle2'
     });
@@ -85,8 +102,14 @@ async function mainProcess(cliArgs: CliArgs) {
     const finishTime = performance.now();
     const timeTaken = ((finishTime - startTime) / 1000).toFixed(2) + 's';
 
-    logger.info(`Total processing time: ${timeTaken}.`);
-    logger.info('Thank you for using Starlight to PDF!✨');
+    logger.info(
+      cliColor(
+        `Total processing time: ${cliTextStyle(timeTaken, 'bold')}.`,
+        'black',
+        { bright: true }
+      )
+    );
+    logger.info(`Thank you for using ${cliToolName}!✨\n`);
     logger.stop();
 
     process.exit(0);
