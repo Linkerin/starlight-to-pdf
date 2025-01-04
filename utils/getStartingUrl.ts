@@ -1,6 +1,6 @@
 import type { Page } from 'puppeteer';
 
-import { cliColor, cliLink } from './cliStylings';
+import { cliLink, cliNeutralText } from './cliStylings';
 import getNextUrl from './getNextUrl';
 import gotoWithRetry from './gotoWithRetry';
 import { logger } from '../services/Logger';
@@ -38,10 +38,8 @@ async function getStartingUrl({
     if (nextUrl.hostname !== url.hostname) continue; // prevents fetching from other domains
 
     logger.info(
-      cliColor(
-        `Looking for next page. Navigating to ${cliLink(nextUrl.href)}...`,
-        'black',
-        { bright: true }
+      cliNeutralText(
+        `Looking for next page. Navigating to ${cliLink(nextUrl.href)}...`
       )
     );
 

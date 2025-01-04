@@ -2,7 +2,12 @@ import puppeteer, { Browser } from 'puppeteer';
 import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
 
 import type CliArgs from '../services/CliArgs';
-import { cliColor, cliLink, cliTextStyle } from '../utils/cliStylings';
+import {
+  cliColor,
+  cliLink,
+  cliNeutralText,
+  cliTextStyle
+} from '../utils/cliStylings';
 import composeBody from '../utils/composeBody';
 import getAllContent from '../utils/getAllContent';
 import getStartingUrl from '../utils/getStartingUrl';
@@ -14,9 +19,7 @@ import { TIMEOUT_MS } from '../lib/constants';
 
 const cliToolName = `${cliColor('Starlight', 'yellow', {
   bright: true
-})} ${cliColor('to', 'black', {
-  bright: true
-})} ${cliColor('PDF', 'red', { bright: true })}`;
+})} ${cliNeutralText('to')} ${cliColor('PDF', 'red', { bright: true })}`;
 
 async function mainProcess(cliArgs: CliArgs) {
   let browser: Browser | null = null;
@@ -33,11 +36,7 @@ async function mainProcess(cliArgs: CliArgs) {
     logger.start();
     logger.info(`Welcome to ${cliToolName} tool! 📖`);
     if (version) {
-      logger.info(
-        cliColor(`version: ${version}\n`, 'black', {
-          bright: true
-        })
-      );
+      logger.info(cliNeutralText(`version: ${version}\n`));
     }
 
     const baseUrl = cliArgs.values.url;
@@ -80,11 +79,7 @@ async function mainProcess(cliArgs: CliArgs) {
       htmlContent
     });
 
-    logger.info(
-      cliColor('Adjusting content. It may take a while...', 'black', {
-        bright: true
-      })
-    );
+    logger.info(cliNeutralText('Adjusting content. It may take a while...'));
     await page.goto(startUrl.href, {
       waitUntil: 'networkidle2'
     });
@@ -103,10 +98,8 @@ async function mainProcess(cliArgs: CliArgs) {
     const timeTaken = ((finishTime - startTime) / 1000).toFixed(2) + 's';
 
     logger.info(
-      cliColor(
-        `Total processing time: ${cliTextStyle(timeTaken, 'bold')}.`,
-        'black',
-        { bright: true }
+      cliNeutralText(
+        `Total processing time: ${cliTextStyle(timeTaken, 'bold')}.`
       )
     );
     logger.info(`Thank you for using ${cliToolName}!✨\n`);

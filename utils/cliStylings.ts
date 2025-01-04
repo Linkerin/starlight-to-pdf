@@ -41,3 +41,7 @@ export function cliLink(link: string): string {
 
   return result;
 }
+
+export function cliNeutralText(text: string): string {
+  return cliColor(text, 'black', { bright: true });
+}

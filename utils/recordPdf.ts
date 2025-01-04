@@ -4,7 +4,7 @@ import path from 'path';
 import type { Page, PaperFormat, PDFOptions } from 'puppeteer';
 
 import type CliArgs from '../services/CliArgs';
-import { cliColor, cliLink } from './cliStylings';
+import { cliLink, cliNeutralText } from './cliStylings';
 import errorCatcher from './errorCatcher';
 import { logger } from '../services/Logger';
 import { ParsingError } from '../services/Errors';
@@ -16,9 +16,7 @@ interface RecordPdfParams {
 }
 
 async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
-  logger.info(
-    cliColor('Generating PDF. Please wait.', 'black', { bright: true })
-  );
+  logger.info(cliNeutralText('Generating PDF. Please wait.'));
 
   const filename = `${cliArgs.values.filename ?? hostname}.pdf`;
   const margins = cliArgs.values.margins?.split(' ') ?? [
@@ -68,7 +66,7 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
   }
 
   logger.success(
-    `PDF file was generated and saved to ${cliLink(pdfOptions.path ?? '')}.\n`
+    `PDF file was generated and saved to ${cliLink(pdfOptions.path ?? '')}\n`
   );
 
   return pdfOptions;

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import CliArgs from './services/CliArgs';
-import { cliColor } from './utils/cliStylings';
+import { cliColor, cliNeutralText, cliTextStyle } from './utils/cliStylings';
 import helpProcess from './processes/helpProcess';
 import { logger } from './services/Logger';
 import mainProcess from './processes/mainProcess';
@@ -22,18 +22,27 @@ try {
   await mainProcess(cliArgs);
 } catch (err) {
   if (err instanceof ValidationError || err instanceof ParsingError) {
-    logger.error(`${err.name}: ${err.message}`);
+    logger.error(
+      `${cliColor(cliTextStyle(err.name, 'bold'), 'red')}: ${err.message}`
+    );
     if (err.additionalInfo?.originalErrorMessage) {
-      logger.error(`Error: ${err.additionalInfo.originalErrorMessage}`);
+      logger.error(
+        `${cliColor(cliTextStyle('Error', 'bold'), 'red')}: ${
+          err.additionalInfo.originalErrorMessage
+        }`
+      );
     }
   } else {
     logger.error('Unknown error occurred.');
     if (err instanceof Error) {
-      logger.error(`Error: ${err.message}`);
+      logger.error(
+        `${cliColor(cliTextStyle('Error', 'bold'), 'red')}: ${err.message}`
+      );
     }
   }
 
-  logger.error(cliColor('Program exits.', 'black', { bright: true }));
+  logger.error(cliNeutralText('Program exits.'));
+  logger.stop();
 
   process.exit(1);
 }

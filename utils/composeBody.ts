@@ -29,10 +29,10 @@ function createContents(contentData: Contents[], cliArgs: CliArgs): string {
   logger.info(
     `Created table of contents.${
       contentsName !== defaultContentsName
-        ? ` User defined name: ${cliColor(
+        ? ` User defined name: \`${cliColor(
             cliTextStyle(contentsName, 'bold'),
             'yellow'
-          )}`
+          )}\``
         : ''
     }`
   );
