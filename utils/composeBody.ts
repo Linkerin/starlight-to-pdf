@@ -1,8 +1,12 @@
+import path from 'path';
+import { readFile } from 'fs/promises';
+
 import { CLASSNAMES } from '../lib/constants';
 import type CliArgs from '../services/CliArgs';
-import { cliColor, cliTextStyle } from './cliStylings';
+import { cliColor, cliLink, cliTextStyle } from './cliStylings';
 import type { Contents, GetAllContentReturn } from '../lib/types/common.types';
 import { logger } from '../services/Logger';
+import { ParsingError } from '../services/Errors';
 
 function composeListEl(contentData: Contents[]): string {
   let contentsHtml = '';
@@ -48,15 +52,40 @@ interface ComposeBodyParams extends GetAllContentReturn {
   cliArgs: CliArgs;
 }
 
-function composeBody({
+async function getStyles(fileRoute: string): Promise<string> {
+  if (!fileRoute) {
+    throw new ParsingError('Provided invalid filepath for custom CSS styles.')
+  }
+
+  const filePath = path.resolve(path.normalize(fileRoute));
+  try {
+    const stylesContent = await readFile(filePath, 'utf-8')
+
+    return stylesContent
+    
+  } catch (err) {
+    const errMsg = `Could not read styles content from '${cliLink(filePath)}'.`
+
+    if (err instanceof Error) {
+      throw new ParsingError(errMsg, {originalErrorMessage: err.message})
+    } else {
+      throw new ParsingError(errMsg)
+    }
+  }
+}
+
+async function composeBody({
   baseOrigin,
   cliArgs,
   contentsData,
   htmlContent
-}: ComposeBodyParams): string {
+}: ComposeBodyParams): Promise<string> {
   const contents = cliArgs.values['no-contents']
     ? ''
     : createContents(Array.from(contentsData), cliArgs);
+  
+  const {styles} = cliArgs.values;
+  const userStyles = styles ? await getStyles(styles): ''
 
   const body = `<base href="${baseOrigin}" />
                   <style>
@@ -70,13 +99,15 @@ function composeBody({
                     .${CLASSNAMES.pageBreak} {
                       break-after: page;
                     }
+
+                    ${userStyles}
                   </style>
-                  ${contents}
                   ${
                     cliArgs.values.paddings
                       ? `<style>@page { padding: ${cliArgs.values.paddings} }</style>`
                       : ''
                   }
+                  ${contents}
                   ${htmlContent}
                `;
 

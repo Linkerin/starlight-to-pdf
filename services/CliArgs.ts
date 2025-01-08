@@ -48,6 +48,9 @@ const cliOptions = {
   'print-bg': {
     validate: validators.isBoolean
   },
+  styles: {
+    validate: validators.isPath
+  },
   timeout: {
     validate: validators.isString,
     parse: parsers.timeout
@@ -113,6 +116,9 @@ class CliArgs {
           'print-bg': {
             type: 'boolean'
           },
+          styles: {
+            type: 'string'
+          },  
           timeout: {
             type: 'string'
           },
