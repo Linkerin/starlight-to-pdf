@@ -49,7 +49,7 @@ const cliOptions = {
     validate: validators.isBoolean
   },
   styles: {
-    validate: validators.isPath
+    validate: validators.isStylesFile
   },
   timeout: {
     validate: validators.isString,
@@ -118,7 +118,7 @@ class CliArgs {
           },
           styles: {
             type: 'string'
-          },  
+          },
           timeout: {
             type: 'string'
           },

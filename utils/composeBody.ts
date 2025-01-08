@@ -20,7 +20,7 @@ function composeListEl(contentData: Contents[]): string {
     contentsHtml += `</li>`;
   });
 
-  const result = `<ul>${contentsHtml}</ul>`;
+  const result = `<ul ${CLASSNAMES.contents}>${contentsHtml}</ul>`;
 
   return result;
 }
@@ -54,23 +54,21 @@ interface ComposeBodyParams extends GetAllContentReturn {
 
 async function getStyles(fileRoute: string): Promise<string> {
   if (!fileRoute) {
-    throw new ParsingError('Provided invalid filepath for custom CSS styles.')
+    throw new ParsingError('Provided invalid filepath for custom CSS styles.');
   }
 
   const filePath = path.resolve(path.normalize(fileRoute));
   try {
-    const stylesContent = await readFile(filePath, 'utf-8')
+    const stylesContent = await readFile(filePath, 'utf-8');
+    logger.info(`Extracted custom styles from ${cliLink(filePath)}`);
 
-    return stylesContent
-    
+    return stylesContent;
   } catch (err) {
-    const errMsg = `Could not read styles content from '${cliLink(filePath)}'.`
+    const errMsg = `Could not read styles content from '${cliLink(filePath)}'.`;
 
-    if (err instanceof Error) {
-      throw new ParsingError(errMsg, {originalErrorMessage: err.message})
-    } else {
-      throw new ParsingError(errMsg)
-    }
+    throw new ParsingError(errMsg, {
+      originalErrorMessage: err instanceof Error ? err.message : ''
+    });
   }
 }
 
@@ -83,32 +81,29 @@ async function composeBody({
   const contents = cliArgs.values['no-contents']
     ? ''
     : createContents(Array.from(contentsData), cliArgs);
-  
-  const {styles} = cliArgs.values;
-  const userStyles = styles ? await getStyles(styles): ''
+
+  const { paddings, styles } = cliArgs.values;
+  const userStyles = styles ? await getStyles(styles) : '';
+  const pagePaddings = paddings ? `@page { padding: ${paddings} }` : '';
 
   const body = `<base href="${baseOrigin}" />
-                  <style>
-                    aside,
-                    code,
-                    figure,
-                    pre {
-                      break-inside: avoid !important;
-                    }
-
-                    .${CLASSNAMES.pageBreak} {
-                      break-after: page;
-                    }
-
-                    ${userStyles}
-                  </style>
-                  ${
-                    cliArgs.values.paddings
-                      ? `<style>@page { padding: ${cliArgs.values.paddings} }</style>`
-                      : ''
+                <style>
+                  aside,
+                  code,
+                  figure,
+                  pre {
+                    break-inside: avoid !important;
                   }
-                  ${contents}
-                  ${htmlContent}
+
+                  .${CLASSNAMES.pageBreak} {
+                    break-after: page;
+                  }
+
+                  ${userStyles}
+                  ${pagePaddings}
+                </style>
+                ${contents}
+                <div class=${CLASSNAMES.mainContainer}>${htmlContent}</div>
                `;
 
   return body;

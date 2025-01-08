@@ -67,6 +67,9 @@ Options:
 --print-bg	${cliNeutralText(
     "Set to print background graphics. It's a `printBackground` property in Puppeteer's PDFOptions."
   )}
+--styles	${cliNeutralText(
+    'Path to the CSS file containing custom styles for the generated PDF. The styles will be injected into the `<style>` tag inside the `<body>` element. Also check the README for a list of special CSS classes used by the tool.'
+  )}
 --timeout	${cliNeutralText(
     'Timeout for both the page actions and `protocolTimeout` in milliseconds. You may need to increase this value for parsing large websites. The default value is `120000` (2 minutes).'
   )}

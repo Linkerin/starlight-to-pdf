@@ -72,7 +72,7 @@ async function mainProcess(cliArgs: CliArgs) {
       cliArgs
     });
 
-    const body = composeBody({
+    const body = await composeBody({
       baseOrigin: baseUrl.origin,
       cliArgs,
       contentsData,

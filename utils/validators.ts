@@ -49,7 +49,7 @@ const validators = {
 
     if (invalidChars.test(name) || illegalNames.test(name)) {
       throw new ValidationError(
-        `Invalid \`--${key}\` value. Provided: ${name} `
+        `Invalid \`--${key}\` value. Provided: '${name}' `
       );
     }
 
@@ -70,7 +70,7 @@ const validators = {
     return true;
   },
 
-  isPath(value: unknown, key: string): boolean {
+  isPath(value: unknown, key: string): value is string {
     if (!validators.isString(value, key)) return false;
 
     if (value.trim() === '') {
@@ -114,6 +114,20 @@ const validators = {
           `Invalid margin value provided: '${spacing}'.`
         );
       }
+    }
+
+    return true;
+  },
+
+  isStylesFile(value: unknown, key: string): boolean {
+    if (!validators.isPath(value, key)) return false;
+
+    const fileExtension = value.split('.').at(-1);
+
+    if (fileExtension !== 'css') {
+      throw new ValidationError(
+        `Invalid styles file. Provided: '${value}'. Expected a CSS file.`
+      );
     }
 
     return true;
