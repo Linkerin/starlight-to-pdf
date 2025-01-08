@@ -2,6 +2,18 @@ import { cliLink, cliTextStyle } from './cliStylings';
 import { logger } from '../services/Logger';
 import { ValidationError } from '../services/Errors';
 
+function parseUrlStr(value: string, origin: string): string {
+  if (!URL.canParse(value, origin)) {
+    throw new ValidationError(`Invalid URL path as exclude value: '${value}'.`);
+  }
+
+  const excludeUrl = new URL(value, origin);
+  const href =
+    excludeUrl.href.at(-1) === '/' ? excludeUrl.href : excludeUrl.href + '/';
+
+  return href;
+}
+
 const parsers = {
   url: (url: string): URL => {
     if (!url) {
@@ -49,22 +61,26 @@ const parsers = {
     for (const value of values) {
       const excludeValues = value.split(' ');
       for (const excludeValue of excludeValues) {
-        if (!URL.canParse(excludeValue, origin)) {
-          throw new ValidationError(
-            `Invalid URL path as exclude value: '${excludeValue}'.`
-          );
-        }
-
-        const excludeUrl = new URL(excludeValue, origin);
-        const href =
-          excludeUrl.href.at(-1) === '/'
-            ? excludeUrl.href
-            : excludeUrl.href + '/';
+        const href = parseUrlStr(excludeValue, origin);
         excludeUrls.add(href);
       }
     }
 
     return excludeUrls;
+  },
+
+  lastPage: (value: string, url?: URL): string => {
+    if (!url) {
+      throw new ValidationError('Base URL is required to parse excludes');
+    }
+
+    if (!value) {
+      throw new ValidationError('Last page value is required for parsing.');
+    }
+
+    const href = parseUrlStr(value, url.origin);
+
+    return href;
   },
 
   timeout: (timeout: string): number => {

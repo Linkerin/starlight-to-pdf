@@ -79,11 +79,14 @@ async function getAllContent({
   contentsData,
   htmlContent,
   page,
-  exclude
+  cliArgs
 }: GetAllContentParams): Promise<GetAllContentReturn> {
   let parsedHtml = '';
   const currUrl = page.url();
+
+  const { exclude, last } = cliArgs.values;
   const isExcluded = !!exclude && exclude.has(currUrl);
+  const isLastPage = !!last && currUrl === last;
 
   if (!isExcluded) {
     logger.info(cliNeutralText(`Parsing page: ${cliLink(currUrl)}`));
@@ -97,7 +100,13 @@ async function getAllContent({
   const updatedHtmlContent = htmlContent + parsedHtml;
 
   const nextUrl = await getNextUrl(page);
-  if (!nextUrl) {
+  if (isLastPage || !nextUrl) {
+    if (isLastPage) {
+      logger.info(
+        `Parsing finishes: encountered user defined last page: ${cliLink(last)}`
+      );
+    }
+
     logger.info(
       cliNeutralText(
         `All pages were parsed. Web pages total: ${cliTextStyle(
@@ -118,7 +127,7 @@ async function getAllContent({
     htmlContent: updatedHtmlContent,
     contentsData: contentsData,
     page,
-    exclude
+    cliArgs
   });
 }
 

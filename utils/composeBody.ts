@@ -54,7 +54,9 @@ function composeBody({
   contentsData,
   htmlContent
 }: ComposeBodyParams): string {
-  const contents = createContents(Array.from(contentsData), cliArgs);
+  const contents = cliArgs.values['no-contents']
+    ? ''
+    : createContents(Array.from(contentsData), cliArgs);
 
   const body = `<base href="${baseOrigin}" />
                   <style>
@@ -69,7 +71,7 @@ function composeBody({
                       break-after: page;
                     }
                   </style>
-                  ${cliArgs.values['no-contents'] ? '' : contents}
+                  ${contents}
                   ${
                     cliArgs.values.paddings
                       ? `<style>@page { padding: ${cliArgs.values.paddings} }</style>`

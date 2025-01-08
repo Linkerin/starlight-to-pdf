@@ -69,7 +69,7 @@ async function mainProcess(cliArgs: CliArgs) {
       page,
       htmlContent: '',
       contentsData: new Set(),
-      exclude: cliArgs.values.exclude
+      cliArgs
     });
 
     const body = composeBody({

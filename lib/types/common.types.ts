@@ -1,5 +1,7 @@
 import type { Page } from 'puppeteer';
 
+import type CliArgs from '../../services/CliArgs';
+
 export type CliColor =
   | 'red'
   | 'green'
@@ -20,7 +22,7 @@ export interface GetAllContentParams {
   htmlContent: string;
   contentsData: Set<Contents>;
   page: Page;
-  exclude?: Set<string>;
+  cliArgs: CliArgs;
 }
 
 export type GetAllContentReturn = Pick<

@@ -38,7 +38,7 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
       );
     }
 
-    logger.info(`Created the PDF target directory: ${cliLink(dirPath)}.`);
+    logger.info(`Created the PDF target directory: ${cliLink(dirPath)}`);
   }
 
   const pdfOptions: PDFOptions = {

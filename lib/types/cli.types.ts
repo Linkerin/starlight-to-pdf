@@ -5,6 +5,7 @@ export type CliValuesObj = {
   filename?: string;
   format?: string;
   help?: boolean;
+  last?: string;
   margins?: string;
   'no-contents'?: string;
   paddings?: string;

@@ -43,6 +43,9 @@ Options:
     "The paper format (e.g., A4, Letter) for the generated PDF. Check Puppeteer's paper formats for more details."
   )}
 --help	-h	${cliNeutralText('Displays the help message and exits.')}
+--last	-l	${cliNeutralText(
+    'A string of the last link that will be parsed (e.g. --last /docs/demo). If the last page is reached, the program will stop parsing and will generate output PDF.'
+  )}
 --margins	${cliNeutralText(
     `Sets margins for the PDF file. They must be provided as a string with 4 values separates by space, reflecting the top, right, bottom and left margins respectively. Default value is ${cliTextStyle(
       "'1cm 1cm 1cm 1.5cm'",
