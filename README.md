@@ -65,7 +65,7 @@ Resulting PDF file: [spectrum-docs.pdf](./readme_assets/spectrum-docs.pdf)
   _(excluding the table of contents)_.
 - `.s2pdf-contents` - The `<ul>` element containing the generated table of
   contents.
-- `.s2pdf-heading` - The `<h1>` headings of each page.
+- `.s2pdf-heading` - The element that contains `<h1>` headings of each page.
 - `.s2pdf-pagebreak` - Each page text content with a defined CSS
   `break-after: page` property.
 

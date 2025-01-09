@@ -7,6 +7,7 @@ import { cliColor, cliLink, cliTextStyle } from './cliStylings';
 import type { Contents, GetAllContentReturn } from '../lib/types/common.types';
 import { logger } from '../services/Logger';
 import { ParsingError } from '../services/Errors';
+import errorCatcher from './errorCatcher';
 
 function composeListEl(contentData: Contents[]): string {
   let contentsHtml = '';
@@ -58,18 +59,20 @@ async function getStyles(fileRoute: string): Promise<string> {
   }
 
   const filePath = path.resolve(path.normalize(fileRoute));
-  try {
-    const stylesContent = await readFile(filePath, 'utf-8');
-    logger.info(`Extracted custom styles from ${cliLink(filePath)}`);
 
-    return stylesContent;
-  } catch (err) {
-    const errMsg = `Could not read styles content from '${cliLink(filePath)}'.`;
-
-    throw new ParsingError(errMsg, {
-      originalErrorMessage: err instanceof Error ? err.message : ''
-    });
+  const [error, stylesContent] = await errorCatcher(
+    readFile(filePath, 'utf-8')
+  );
+  if (error) {
+    throw new ParsingError(
+      `Could not read styles content from '${cliLink(filePath)}'.`,
+      { originalErrorMessage: error.message }
+    );
   }
+
+  logger.info(`Extracted custom styles from ${cliLink(filePath)}`);
+
+  return stylesContent;
 }
 
 async function composeBody({
