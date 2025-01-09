@@ -20,8 +20,14 @@ const cliOptions = {
   filename: {
     validate: validators.isFilename
   },
+  footer: {
+    validate: validators.isHtmlFile
+  },
   format: {
     validate: validators.isFormat
+  },
+  header: {
+    validate: validators.isHtmlFile
   },
   help: {
     validate: validators.isBoolean
@@ -85,7 +91,13 @@ class CliArgs {
             type: 'string',
             short: 'f'
           },
+          footer: {
+            type: 'string'
+          },
           format: {
+            type: 'string'
+          },
+          header: {
             type: 'string'
           },
           help: {

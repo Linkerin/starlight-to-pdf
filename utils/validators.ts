@@ -7,6 +7,18 @@ import { ValidationError } from '../services/Errors';
 const invalidChars = /[<>:"|?*]/; // Windows-specific characters
 const illegalNames = /^(con|prn|aux|nul|com[1-9]|lpt[1-9])$/i; // Windows reserved names
 
+function isProperExtension(fileName: string, extension: string): boolean {
+  const fileExtension = fileName.split('.').at(-1);
+
+  if (fileExtension !== extension) {
+    throw new ValidationError(
+      `Invalid file provided: '${fileName}'. Expected \`*.${extension}\` file.`
+    );
+  }
+
+  return true;
+}
+
 const validators = {
   isBoolean(value: unknown, key: string): value is boolean {
     if (typeof value !== 'boolean') {
@@ -70,6 +82,13 @@ const validators = {
     return true;
   },
 
+  isHtmlFile(value: unknown, key: string): boolean {
+    if (!validators.isPath(value, key)) return false;
+    if (!isProperExtension(value, 'html')) return false;
+
+    return true;
+  },
+
   isPath(value: unknown, key: string): value is string {
     if (!validators.isString(value, key)) return false;
 
@@ -121,14 +140,7 @@ const validators = {
 
   isStylesFile(value: unknown, key: string): boolean {
     if (!validators.isPath(value, key)) return false;
-
-    const fileExtension = value.split('.').at(-1);
-
-    if (fileExtension !== 'css') {
-      throw new ValidationError(
-        `Invalid styles file. Provided: '${value}'. Expected a CSS file.`
-      );
-    }
+    if (!isProperExtension(value, 'css')) return false;
 
     return true;
   },

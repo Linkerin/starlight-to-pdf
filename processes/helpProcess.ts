@@ -28,7 +28,7 @@ Options:
     'The URL of the Starlight powered documentation website to convert to PDF. The only positional argument can be used instead of this flag.'
   )}
 --contents-name	${cliNeutralText(
-    `The name used for the generated table of contents in the PDF. By default, it's ${cliTextStyle(
+    `Customizes the generated table of contents name in the PDF. Default: ${cliTextStyle(
       '`Contents`',
       'bold'
     )}.`
@@ -37,43 +37,49 @@ Options:
     `A string containing links separated by space that shouldn't be added to the resulting PDF file (e.g. --exclude '/docs/contacts /docs/demo'). You may also provide multiple values: -e /docs/contacts -e /docs/demo.`
   )}
 --filename	-f	${cliNeutralText(
-    'The output filename for the generated PDF. Default is the hostname of the provided website.'
+    'The output filename for the PDF. Default is the hostname of the provided URL.'
+  )}
+--footer	${cliNeutralText(
+    "Path to the HTML file for the PDF print footer. For more details, check PDF header and footer section in the README and Puppeteer's pdf options."
   )}
 --format	${cliNeutralText(
-    "The paper format (e.g., A4, Letter) for the generated PDF. Check Puppeteer's paper formats for more details."
+    "The paper format (e.g., A4, Letter) for the PDF file. Refer to Puppeteer's paper formats for more details."
+  )}
+--header	${cliNeutralText(
+    "Path to the HTML file for the PDF print header. For more details, check PDF header and footer section in the README and Puppeteer's pdf options."
   )}
 --help	-h	${cliNeutralText('Displays the help message and exits.')}
 --last	-l	${cliNeutralText(
-    'A string of the last link that will be parsed (e.g. --last /docs/demo). If the last page is reached, the program will stop parsing and will generate output PDF.'
+    'Sets the last link to parse (e.g. --last /docs/demo). Further parsing stops once this link is reached and parsed.'
   )}
 --margins	${cliNeutralText(
-    `Sets margins for the PDF file. They must be provided as a string with 4 values separates by space, reflecting the top, right, bottom and left margins respectively. Default value is ${cliTextStyle(
+    `Sets margins for the PDF file. Provide a string with 4 values separates by space, reflecting the top, right, bottom and left margins respectively. Default value is ${cliTextStyle(
       "'1cm 1cm 1cm 1.5cm'",
       'bold'
     )}.`
   )}
 --no-contents	${cliNeutralText(
-    'Disables the table of contents in the generated PDF.'
+    'Disables generation of the table of contents in the PDF.'
   )}
 --paddings	${cliNeutralText(
-    'Sets padding for the PDF content. They must be provided as a string with 4 values separates by space, reflecting the top, right, bottom and left paddings respectively. Paddings are disabled by default.'
+    'Sets padding for the PDF content. Provide as a string with 4 values separates by space, reflecting the top, right, bottom and left paddings respectively. Paddings are disabled by default.'
   )}
 --path	-p	${cliNeutralText(
-    'The directory path where the PDF will be saved. Default value is the current working directory.'
+    'Sets the directory path for the output PDF. Default is the current working directory.'
   )}
 --pdf-outline	${cliNeutralText(
-    "Generates an outline for the PDF file on the side. It's an `outline` property in Puppeteer's PDFOptions."
+    "Enables a side outline in the PDF file. It's an `outline` property in Puppeteer's PDFOptions."
   )}
 --print-bg	${cliNeutralText(
-    "Set to print background graphics. It's a `printBackground` property in Puppeteer's PDFOptions."
+    "Enables printing of background graphics. It's a `printBackground` property in Puppeteer's PDFOptions."
   )}
 --styles	${cliNeutralText(
-    'Path to the CSS file containing custom styles for the generated PDF. The styles will be injected into the `<style>` tag inside the `<body>` element. Also check the README for a list of special CSS classes used by the tool.'
+    'Path to a CSS file for custom PDF styles. The styles are injected into the `<style>` tag inside the `<body>` element. Also check the README for a list of special CSS classes used by the tool.'
   )}
 --timeout	${cliNeutralText(
     'Timeout for both the page actions and `protocolTimeout` in milliseconds. You may need to increase this value for parsing large websites. The default value is `120000` (2 minutes).'
   )}
---version	-v	${cliNeutralText('Displays the version of the tool and exits.')}
+--version	-v	${cliNeutralText('Displays the tool version and exits.')}
   `;
 
   logger.info(helpMessage);

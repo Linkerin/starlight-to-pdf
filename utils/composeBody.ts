@@ -1,13 +1,10 @@
-import path from 'path';
-import { readFile } from 'fs/promises';
-
 import { CLASSNAMES } from '../lib/constants';
+
 import type CliArgs from '../services/CliArgs';
-import { cliColor, cliLink, cliTextStyle } from './cliStylings';
+import { cliColor, cliTextStyle } from './cliStylings';
 import type { Contents, GetAllContentReturn } from '../lib/types/common.types';
+import getFileContent from './getFileContent';
 import { logger } from '../services/Logger';
-import { ParsingError } from '../services/Errors';
-import errorCatcher from './errorCatcher';
 
 function composeListEl(contentData: Contents[]): string {
   let contentsHtml = '';
@@ -53,28 +50,6 @@ interface ComposeBodyParams extends GetAllContentReturn {
   cliArgs: CliArgs;
 }
 
-async function getStyles(fileRoute: string): Promise<string> {
-  if (!fileRoute) {
-    throw new ParsingError('Provided invalid filepath for custom CSS styles.');
-  }
-
-  const filePath = path.resolve(path.normalize(fileRoute));
-
-  const [error, stylesContent] = await errorCatcher(
-    readFile(filePath, 'utf-8')
-  );
-  if (error) {
-    throw new ParsingError(
-      `Could not read styles content from '${cliLink(filePath)}'.`,
-      { originalErrorMessage: error.message }
-    );
-  }
-
-  logger.info(`Extracted custom styles from ${cliLink(filePath)}`);
-
-  return stylesContent;
-}
-
 async function composeBody({
   baseOrigin,
   cliArgs,
@@ -86,7 +61,7 @@ async function composeBody({
     : createContents(Array.from(contentsData), cliArgs);
 
   const { paddings, styles } = cliArgs.values;
-  const userStyles = styles ? await getStyles(styles) : '';
+  const userStyles = styles ? await getFileContent(styles) : '';
   const pagePaddings = paddings ? `@page { padding: ${paddings} }` : '';
 
   const body = `<base href="${baseOrigin}" />

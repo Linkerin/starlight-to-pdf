@@ -3,7 +3,9 @@ export type CliValuesObj = {
   'contents-name'?: string;
   exclude?: Set<string>;
   filename?: string;
+  footer?: string;
   format?: string;
+  header?: string;
   help?: boolean;
   last?: string;
   margins?: string;

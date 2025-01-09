@@ -6,8 +6,10 @@ import type { Page, PaperFormat, PDFOptions } from 'puppeteer';
 import type CliArgs from '../services/CliArgs';
 import { cliLink, cliNeutralText } from './cliStylings';
 import errorCatcher from './errorCatcher';
+import getFileContent from './getFileContent';
 import { logger } from '../services/Logger';
 import { ParsingError } from '../services/Errors';
+import { TIMEOUT_MS } from '../lib/constants';
 
 interface RecordPdfParams {
   cliArgs: CliArgs;
@@ -51,8 +53,17 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
       bottom: margins[2],
       left: margins[3]
     },
-    outline: cliArgs.values['pdf-outline'] ?? false
+    outline: Boolean(cliArgs.values['pdf-outline']),
+    timeout: cliArgs.values.timeout ?? TIMEOUT_MS,
+    displayHeaderFooter: Boolean(cliArgs.values.header || cliArgs.values.footer)
   };
+
+  if (cliArgs.values.header) {
+    pdfOptions.headerTemplate = await getFileContent(cliArgs.values.header);
+  }
+  if (cliArgs.values.footer) {
+    pdfOptions.footerTemplate = await getFileContent(cliArgs.values.footer);
+  }
 
   const [error] = await errorCatcher(page.pdf(pdfOptions));
 
