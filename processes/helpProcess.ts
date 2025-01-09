@@ -40,20 +40,20 @@ Options:
     'The output filename for the PDF. Default is the hostname of the provided URL.'
   )}
 --footer	${cliNeutralText(
-    "Path to the HTML file for the PDF print footer. For more details, check PDF header and footer section in the README and Puppeteer's pdf options."
+    "Path to the HTML file for the PDF print footer. For more details, check PDF header and footer section in the README and Puppeteer's PDFOptions."
   )}
 --format	${cliNeutralText(
     "The paper format (e.g., A4, Letter) for the PDF file. Refer to Puppeteer's paper formats for more details."
   )}
 --header	${cliNeutralText(
-    "Path to the HTML file for the PDF print header. For more details, check PDF header and footer section in the README and Puppeteer's pdf options."
+    "Path to the HTML file for the PDF print header. For more details, check PDF header and footer section in the README and Puppeteer's PDFOptions."
   )}
 --help	-h	${cliNeutralText('Displays the help message and exits.')}
 --last	-l	${cliNeutralText(
     'Sets the last link to parse (e.g. --last /docs/demo). Further parsing stops once this link is reached and parsed.'
   )}
 --margins	${cliNeutralText(
-    `Sets margins for the PDF file. Provide a string with 4 values separates by space, reflecting the top, right, bottom and left margins respectively. Default value is ${cliTextStyle(
+    `Sets margins for the PDF file. Provide a string with 4 values separated by space, reflecting the top, right, bottom and left margins respectively. Default value is ${cliTextStyle(
       "'1cm 1cm 1cm 1.5cm'",
       'bold'
     )}.`
@@ -62,7 +62,7 @@ Options:
     'Disables generation of the table of contents in the PDF.'
   )}
 --paddings	${cliNeutralText(
-    'Sets padding for the PDF content. Provide as a string with 4 values separates by space, reflecting the top, right, bottom and left paddings respectively. Paddings are disabled by default.'
+    'Sets padding for the PDF content. Provide as a string with 4 values separated by space, reflecting the top, right, bottom and left paddings respectively. Paddings are disabled by default.'
   )}
 --path	-p	${cliNeutralText(
     'Sets the directory path for the output PDF. Default is the current working directory.'

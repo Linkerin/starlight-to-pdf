@@ -32,26 +32,26 @@ URL is the only positional and required argument. Alternatively, you can use the
 
 ## 👨‍💻 CLI Flags Reference <a id="flags"></a>
 
-| Flag              | Short | Type      | Description                                                                                                                                                                                                                                       |
-| ----------------- | ----- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--url`           | `-u`  | `string`  | The URL of the Starlight powered documentation website to convert to PDF. The only positional argument can be used instead of this flag. See [⌨️ Getting started](#start) for details.                                                            |
-| `--contents-name` |       | `string`  | Customizes the generated table of contents name in the PDF. Default: `"Contents"`                                                                                                                                                                 |
-| `--exclude`       | `-e`  | `string`  | A string containing links separated by `space` that shouldn't be added to the resulting PDF file (e.g. `--exclude '/docs/contacts /docs/demo'`). You may also provide multiple values: `-e /docs/contacts -e /docs/demo`.                         |
-| `--filename`      | `-f`  | `string`  | The output filename for the PDF. Default is the [hostname](https://developer.mozilla.org/en-US/docs/Web/API/URL/hostname) of the provided URL.                                                                                                    |
-| `--footer`        |       | `string`  | Path to the HTML file for the PDF print footer. For more details, check [PDF header and footer](#header-footer) section and [Puppeteer's pdf options](https://pptr.dev/api/puppeteer.pdfoptions#headertemplate).                                  |
-| `--format`        |       | `string`  | The paper format (e.g., `A4`, `Letter`) for the PDF file. Refer to [Puppeteer's paper formats](https://pptr.dev/api/puppeteer.paperformat) for more details                                                                                       |
-| `--header`        |       | `string`  | Path to the HTML file that will be used as a print header for the generated PDF. For more details, check [PDF header and footer](#header-footer) section and [Puppeteer's pdf options](https://pptr.dev/api/puppeteer.pdfoptions#headertemplate). |
-| `--help`          | `-h`  | `boolean` | Displays the help message and exits.                                                                                                                                                                                                              |
-| `--last`          | `-l`  | `string`  | Sets the last link to parse (e.g. `--last /docs/demo`). Further parsing stops once this link is reached and parsed.                                                                                                                               |
-| `--margins`       |       | `string`  | Sets margins for the PDF file. Provide a string with 4 values separates by `space`, reflecting the top, right, bottom and left margins respectively. Default value is `'1cm 1cm 1cm 1.5cm'`.                                                      |
-| `--no-contents`   |       | `boolean` | Disables generation of the table of contents in the PDF.                                                                                                                                                                                          |
-| `--paddings`      |       | `string`  | Sets padding for the PDF content. Provide a string with 4 values separates by `space`, reflecting the top, right, bottom and left paddings respectively. Paddings are disabled by default.                                                        |
-| `--path`          | `-p`  | `string`  | Sets the directory path for the output PDF. Default is the current working directory.                                                                                                                                                             |
-| `--pdf-outline`   |       | `boolean` | Enables a side outline in the PDF file. It's an `outline` property in [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions).                                                                                                        |
-| `--print-bg`      |       | `boolean` | Enables printing of background graphics. It's a `printBackground` property in [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions/).                                                                                               |
-| `--styles`        |       | `string`  | Path to a CSS file for custom PDF styles. The styles are injected into the `<style>` tag inside the `<body>` element. Also check the list of [special CSS classes](#classes) used by the tool.                                                    |
-| `--timeout`       |       | `string`  | Timeout for both the page actions and `protocolTimeout` in milliseconds. You may need to increase this value for parsing large websites. The default value is `180_000` (2 minutes).                                                              |
-| `--version`       | `-v`  | `boolean` | Displays the tool version and exits.                                                                                                                                                                                                              |
+| Flag              | Short | Type      | Description                                                                                                                                                                                                                                      |
+| ----------------- | ----- | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `--url`           | `-u`  | `string`  | The URL of the Starlight powered documentation website to convert to PDF. The only positional argument can be used instead of this flag. See [⌨️ Getting started](#start) for details.                                                           |
+| `--contents-name` |       | `string`  | Customizes the generated table of contents name in the PDF. Default: `"Contents"`                                                                                                                                                                |
+| `--exclude`       | `-e`  | `string`  | A string containing links separated by `space` that shouldn't be added to the resulting PDF file (e.g. `--exclude '/docs/contacts /docs/demo'`). You may also provide multiple values: `-e /docs/contacts -e /docs/demo`.                        |
+| `--filename`      | `-f`  | `string`  | The output filename for the PDF. Default is the [hostname](https://developer.mozilla.org/en-US/docs/Web/API/URL/hostname) of the provided URL.                                                                                                   |
+| `--footer`        |       | `string`  | Path to the HTML file for the PDF print footer. For more details, check [PDF header and footer](#header-footer) section and [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions#headertemplate).                                  |
+| `--format`        |       | `string`  | The paper format (e.g., `A4`, `Letter`) for the PDF file. Refer to [Puppeteer's paper formats](https://pptr.dev/api/puppeteer.paperformat) for more details                                                                                      |
+| `--header`        |       | `string`  | Path to the HTML file that will be used as a print header for the generated PDF. For more details, check [PDF header and footer](#header-footer) section and [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions#headertemplate). |
+| `--help`          | `-h`  | `boolean` | Displays the help message and exits.                                                                                                                                                                                                             |
+| `--last`          | `-l`  | `string`  | Sets the last link to parse (e.g. `--last /docs/demo`). Further parsing stops once this link is reached and parsed.                                                                                                                              |
+| `--margins`       |       | `string`  | Sets margins for the PDF file. Provide a string with 4 values separated by `space`, reflecting the top, right, bottom and left margins respectively. Default value is `'1cm 1cm 1cm 1.5cm'`.                                                     |
+| `--no-contents`   |       | `boolean` | Disables generation of the table of contents in the PDF.                                                                                                                                                                                         |
+| `--paddings`      |       | `string`  | Sets padding for the PDF content. Provide a string with 4 values separated by `space`, reflecting the top, right, bottom and left paddings respectively. Paddings are disabled by default.                                                       |
+| `--path`          | `-p`  | `string`  | Sets the directory path for the output PDF. Default is the current working directory.                                                                                                                                                            |
+| `--pdf-outline`   |       | `boolean` | Enables a side outline in the PDF file. It's an `outline` property in [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions).                                                                                                       |
+| `--print-bg`      |       | `boolean` | Enables printing of background graphics. It's a `printBackground` property in [Puppeteer's PDFOptions](https://pptr.dev/api/puppeteer.pdfoptions/).                                                                                              |
+| `--styles`        |       | `string`  | Path to a CSS file for custom PDF styles. The styles are injected into the `<style>` tag inside the `<body>` element. Also check the list of [special CSS classes](#classes) used by the tool.                                                   |
+| `--timeout`       |       | `string`  | Timeout for both the page actions and `protocolTimeout` in milliseconds. You may need to increase this value for parsing large websites. The default value is `180_000` (2 minutes).                                                             |
+| `--version`       | `-v`  | `boolean` | Displays the tool version and exits.                                                                                                                                                                                                             |
 
 ### Usage example:
 
@@ -82,7 +82,7 @@ the following classes and values will be automatically injected into them:
 - `.totalPages` - total number of pages in the document.
 
 > Note that Puppeteer's template classes `.title` and `.url` are useless for the
-> tool, as the PDF file in generated on one web page and these values will be
+> tool, as the PDF file is generated on one web page and these values will be
 > the same on all document pages. However, you may still use them in your
 > template, if necessary.
 
@@ -107,8 +107,8 @@ You may also check [the resulting PDF file](./readme_assets/spectrum-docs.pdf).
 ## 📨 Contacts <a id="contacts"></a>
 
 If you want to get in touch, you may open a
-[GitHub issue](https://github.com/Linkerin/starlight-to-pdf/issues) or send me
-an email at: [gusev@snipshot.dev](mailto:gusev@snipshot.dev).
+[GitHub issue](https://github.com/Linkerin/starlight-to-pdf/issues) or email me
+at: [gusev@snipshot.dev](mailto:gusev@snipshot.dev).
 
 ## 🪪 License <a id="license"></a>
 
