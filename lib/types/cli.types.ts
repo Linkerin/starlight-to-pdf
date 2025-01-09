@@ -1,3 +1,5 @@
+import type { PDFMargin } from 'puppeteer';
+
 export type CliValuesObj = {
   url?: URL;
   'contents-name'?: string;
@@ -8,7 +10,7 @@ export type CliValuesObj = {
   header?: string;
   help?: boolean;
   last?: string;
-  margins?: string;
+  margins?: PDFMargin;
   'no-contents'?: string;
   paddings?: string;
   path?: string;

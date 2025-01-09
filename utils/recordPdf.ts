@@ -7,9 +7,9 @@ import type CliArgs from '../services/CliArgs';
 import { cliLink, cliNeutralText } from './cliStylings';
 import errorCatcher from './errorCatcher';
 import getFileContent from './getFileContent';
+import { MARGINS, TIMEOUT_MS } from '../lib/constants';
 import { logger } from '../services/Logger';
 import { ParsingError } from '../services/Errors';
-import { TIMEOUT_MS } from '../lib/constants';
 
 interface RecordPdfParams {
   cliArgs: CliArgs;
@@ -21,12 +21,6 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
   logger.info(cliNeutralText('Generating PDF. Please wait.'));
 
   const filename = `${cliArgs.values.filename ?? hostname}.pdf`;
-  const margins = cliArgs.values.margins?.split(' ') ?? [
-    '1cm',
-    '1cm',
-    '1cm',
-    '1.5cm'
-  ];
   const dirPath = path.resolve(path.normalize(cliArgs.values.path ?? './'));
   // check that the directory exists or create it
   if (!existsSync(dirPath)) {
@@ -47,12 +41,7 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
     path: path.resolve(dirPath, filename),
     format: (cliArgs.values.format as PaperFormat) ?? 'A4',
     printBackground: Boolean(cliArgs.values['print-bg']),
-    margin: {
-      top: margins[0],
-      right: margins[1],
-      bottom: margins[2],
-      left: margins[3]
-    },
+    margin: cliArgs.values.margins ?? MARGINS,
     outline: Boolean(cliArgs.values['pdf-outline']),
     timeout: cliArgs.values.timeout ?? TIMEOUT_MS,
     displayHeaderFooter: Boolean(cliArgs.values.header || cliArgs.values.footer)

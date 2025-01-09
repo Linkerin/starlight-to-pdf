@@ -37,7 +37,8 @@ const cliOptions = {
     parse: parsers.lastPage
   },
   margins: {
-    validate: validators.isSpacing
+    validate: validators.isSpacing,
+    parse: parsers.margins
   },
   'no-contents': {
     validate: validators.isBoolean
@@ -179,15 +180,19 @@ class CliArgs {
             );
             break;
 
-          case 'timeout':
-            this._values.timeout = cliOptions.timeout.parse(value as string);
-            break;
-
           case 'last':
             this._values.last = cliOptions.last.parse(
               value as string,
               this._values.url
             );
+            break;
+
+          case 'margins':
+            this._values.margins = cliOptions.margins.parse(value as string);
+            break;
+
+          case 'timeout':
+            this._values.timeout = cliOptions.timeout.parse(value as string);
             break;
 
           default:

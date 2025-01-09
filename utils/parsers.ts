@@ -1,3 +1,5 @@
+import type { PDFMargin } from 'puppeteer';
+
 import { cliLink, cliTextStyle } from './cliStylings';
 import { logger } from '../services/Logger';
 import { ValidationError } from '../services/Errors';
@@ -81,6 +83,28 @@ const parsers = {
     const href = parseUrlStr(value, url.origin);
 
     return href;
+  },
+
+  margins: (values: string): PDFMargin => {
+    if (!values) {
+      throw new ValidationError('Margins value is required for parsing.');
+    }
+
+    const marginsArr = values.split(' ');
+    if (marginsArr.length !== 4) {
+      throw new ValidationError(
+        `Margins value must be a string with 4 values separated by space.`
+      );
+    }
+
+    const result: PDFMargin = {
+      top: marginsArr[0],
+      right: marginsArr[1],
+      bottom: marginsArr[2],
+      left: marginsArr[3]
+    };
+
+    return result;
   },
 
   timeout: (timeout: string): number => {
