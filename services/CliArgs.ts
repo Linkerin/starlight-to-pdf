@@ -23,6 +23,9 @@ const cliOptions = {
   filename: {
     validate: validators.isFilename
   },
+  'following-html': {
+    validate: validators.isHtmlFile
+  },
   footer: {
     validate: validators.isHtmlFile
   },
@@ -54,6 +57,9 @@ const cliOptions = {
   },
   'pdf-outline': {
     validate: validators.isBoolean
+  },
+  'preceding-html': {
+    validate: validators.isHtmlFile
   },
   'print-bg': {
     validate: validators.isBoolean
@@ -98,6 +104,9 @@ class CliArgs {
             type: 'string',
             short: 'f'
           },
+          'following-html': {
+            type: 'string'
+          },
           footer: {
             type: 'string'
           },
@@ -131,6 +140,9 @@ class CliArgs {
           'pdf-outline': {
             type: 'boolean',
             default: false
+          },
+          'preceding-html': {
+            type: 'string'
           },
           'print-bg': {
             type: 'boolean'

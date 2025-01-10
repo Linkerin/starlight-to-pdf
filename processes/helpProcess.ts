@@ -42,6 +42,9 @@ Options:
 --filename	-f	${cliNeutralText(
     'The output filename for the PDF. Default is the hostname of the provided URL.'
   )}
+--following-html	${cliNeutralText(
+    "Path to an HTML file which content will be inserted an the end of the PDF file. Its behavior is similar to the '--preceding-html' option."
+  )}
 --footer	${cliNeutralText(
     "Path to the HTML file for the PDF print footer. For more details, check PDF header and footer section in the README and Puppeteer's PDFOptions."
   )}
@@ -72,6 +75,9 @@ Options:
   )}
 --pdf-outline	${cliNeutralText(
     "Enables a side outline in the PDF file. It's an `outline` property in Puppeteer's PDFOptions."
+  )}
+--preceding-html	${cliNeutralText(
+    'Path to an HTML file which content will be inserted an the beginning of the PDF file. This option may be useful for adding a cover page.'
   )}
 --print-bg	${cliNeutralText(
     "Enables printing of background graphics. It's a `printBackground` property in Puppeteer's PDFOptions."

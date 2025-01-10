@@ -60,9 +60,27 @@ async function composeBody({
     ? ''
     : createContents(Array.from(contentsData), cliArgs);
 
-  const { paddings, styles } = cliArgs.values;
-  const userStyles = styles ? await getFileContent(styles) : '';
+  const {
+    paddings,
+    styles,
+    'following-html': followingRoute,
+    'preceding-html': precedingRoute
+  } = cliArgs.values;
+
   const pagePaddings = paddings ? `@page { padding: ${paddings} }` : '';
+  const userStylesPromise = styles ? getFileContent(styles) : '';
+  const followingHtmlPromise = followingRoute
+    ? getFileContent(followingRoute)
+    : '';
+  const precedingHtmlPromise = precedingRoute
+    ? getFileContent(precedingRoute)
+    : '';
+
+  const [userStyles, followingHtml, precedingHtml] = await Promise.all([
+    userStylesPromise,
+    followingHtmlPromise,
+    precedingHtmlPromise
+  ]);
 
   const body = `<base href="${baseOrigin}" />
                 <style>
@@ -80,8 +98,10 @@ async function composeBody({
                   ${userStyles}
                   ${pagePaddings}
                 </style>
+                ${precedingHtml}
                 ${contents}
                 <div class=${CLASSNAMES.mainContainer}>${htmlContent}</div>
+                ${followingHtml}
                `;
 
   return body;

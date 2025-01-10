@@ -6,6 +6,7 @@ export type CliValuesObj = {
   'css-page-size'?: boolean;
   exclude?: Set<string>;
   filename?: string;
+  'following-html'?: string;
   footer?: string;
   format?: string;
   header?: string;
@@ -16,6 +17,7 @@ export type CliValuesObj = {
   paddings?: string;
   path?: string;
   'pdf-outline'?: boolean;
+  'preceding-html'?: string;
   'print-bg'?: boolean;
   styles?: string;
   timeout?: number;
