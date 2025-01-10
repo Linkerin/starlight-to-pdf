@@ -1,4 +1,4 @@
-import puppeteer, { Browser } from 'puppeteer';
+import puppeteer, { Browser, type LaunchOptions } from 'puppeteer';
 import { scrollPageToBottom } from 'puppeteer-autoscroll-down';
 
 import type CliArgs from '../services/CliArgs';
@@ -31,6 +31,7 @@ async function mainProcess(cliArgs: CliArgs) {
       );
     }
 
+    const startTime = performance.now();
     const version = await getVersion();
 
     logger.start();
@@ -41,12 +42,19 @@ async function mainProcess(cliArgs: CliArgs) {
 
     const baseUrl = cliArgs.values.url;
 
-    const startTime = performance.now();
-
-    browser = await puppeteer.launch({
+    const browserOptions: LaunchOptions = {
       headless: true,
       protocolTimeout: cliArgs.values.timeout ?? TIMEOUT_MS
-    });
+    };
+    if (cliArgs.values['browser-executable']) {
+      browserOptions.executablePath = cliArgs.values['browser-executable'];
+      logger.info(
+        `Using custom browser executable: ${cliLink(
+          browserOptions.executablePath
+        )}\n`
+      );
+    }
+    browser = await puppeteer.launch(browserOptions);
     const page = await browser.newPage();
     await page.setViewport({ width: 799, height: 1150 });
     page.setDefaultTimeout(cliArgs.values.timeout ?? TIMEOUT_MS);

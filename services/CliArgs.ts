@@ -10,6 +10,9 @@ const cliOptions = {
     validate: validators.isUrl,
     parse: parsers.url
   },
+  'browser-executable': {
+    validate: validators.isPath
+  },
   'contents-name': {
     validate: validators.isString
   },
@@ -88,6 +91,9 @@ class CliArgs {
           url: {
             type: 'string',
             short: 'u'
+          },
+          'browser-executable': {
+            type: 'string'
           },
           'contents-name': {
             type: 'string'

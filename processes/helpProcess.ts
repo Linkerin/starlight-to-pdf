@@ -27,6 +27,9 @@ Options:
 --url	-u	${cliNeutralText(
     'The URL of the Starlight powered documentation website to convert to PDF. The only positional argument can be used instead of this flag.'
   )}
+--browser-executable	${cliNeutralText(
+    'Specifies a path to a browser executable to use instead of the default one (e.g. --browser-executable /usr/bin/chromium-browser).'
+  )}
 --contents-name	${cliNeutralText(
     `Customizes the generated table of contents name in the PDF. Default: ${cliTextStyle(
       '`Contents`',

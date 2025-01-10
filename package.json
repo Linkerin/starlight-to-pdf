@@ -1,6 +1,6 @@
 {
   "name": "starlight-to-pdf",
-  "version": "0.1.8",
+  "version": "1.0.0",
   "description": "A command-line tool to convert Starlight documentation websites into PDF files.",
   "source": "index.js",
   "type": "module",

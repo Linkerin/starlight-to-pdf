@@ -6,7 +6,7 @@ export const MARGINS: PDFMargin = {
   right: '1cm',
   bottom: '1cm',
   left: '1.5cm'
-};
+} as const;
 
 export const CLASSNAMES = {
   contents: 's2pdf-contents',
