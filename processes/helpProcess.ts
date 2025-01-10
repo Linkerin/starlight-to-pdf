@@ -33,6 +33,9 @@ Options:
       'bold'
     )}.`
   )}
+--css-page-size	${cliNeutralText(
+    "Allows setting the PDF page size using CSS `@page`. If the predefined sizes in the '--format' option don't meet your needs, enable this option and specify the desired page size in custom CSS provided via the '--styles' flag (e.g., `@page { size: 8.5in 14in; }`). Note: if you define a page size in CSS without enabling this option, the size from the '--format' option will be used instead, and the content will be scaled to fit the dimensions specified in `@page`."
+  )}
 --exclude	-e	${cliNeutralText(
     `A string containing links separated by space that shouldn't be added to the resulting PDF file (e.g. --exclude '/docs/contacts /docs/demo'). You may also provide multiple values: -e /docs/contacts -e /docs/demo.`
   )}

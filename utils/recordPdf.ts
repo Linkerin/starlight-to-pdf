@@ -43,6 +43,7 @@ async function recordPdf({ cliArgs, hostname, page }: RecordPdfParams) {
     printBackground: Boolean(cliArgs.values['print-bg']),
     margin: cliArgs.values.margins ?? MARGINS,
     outline: Boolean(cliArgs.values['pdf-outline']),
+    preferCSSPageSize: Boolean(cliArgs.values['css-page-size']),
     timeout: cliArgs.values.timeout ?? TIMEOUT_MS,
     displayHeaderFooter: Boolean(cliArgs.values.header || cliArgs.values.footer)
   };

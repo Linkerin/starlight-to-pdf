@@ -13,6 +13,9 @@ const cliOptions = {
   'contents-name': {
     validate: validators.isString
   },
+  'css-page-size': {
+    validate: validators.isBoolean
+  },
   exclude: {
     validate: validators.isExclude,
     parse: parsers.exclude
@@ -82,6 +85,9 @@ class CliArgs {
           },
           'contents-name': {
             type: 'string'
+          },
+          'css-page-size': {
+            type: 'boolean'
           },
           exclude: {
             type: 'string',
