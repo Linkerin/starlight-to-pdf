@@ -24,7 +24,8 @@ jobs:
         run: |
           npm install
           npm run build
-          npm run preview
+          npm run preview &
+          echo $!
 
       - name: Wait for server startup
         run: sleep 5
