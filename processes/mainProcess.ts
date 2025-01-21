@@ -8,14 +8,14 @@ import {
   cliNeutralText,
   cliTextStyle
 } from '../utils/cliStylings';
-import composeBody from '../utils/composeBody';
+import { composeBody, injectBody } from '../utils/body';
 import getAllContent from '../utils/getAllContent';
 import getStartingUrl from '../utils/getStartingUrl';
 import getVersion from '../utils/getVersion';
 import { logger } from '../services/Logger';
 import { ParsingError, ValidationError } from '../services/Errors';
 import recordPdf from '../utils/recordPdf';
-import { TIMEOUT_MS } from '../lib/constants';
+import { SELECTORS, TIMEOUT_MS } from '../lib/constants';
 
 const cliToolName = `${cliColor('Starlight', 'yellow', {
   bright: true
@@ -91,11 +91,12 @@ async function mainProcess(cliArgs: CliArgs) {
     await page.goto(startUrl.href, {
       waitUntil: 'networkidle2'
     });
-    await page.evaluate(result => {
-      const body = document.body;
-      body.innerHTML = result;
-      return body.innerHTML;
-    }, body);
+    await page.evaluate(
+      injectBody,
+      body,
+      Boolean(cliArgs.values['no-starlight-print-css']),
+      SELECTORS.starlightPrintStyles
+    );
     await scrollPageToBottom(page, { size: 1100 });
 
     await recordPdf({ cliArgs, hostname: baseUrl.hostname, page });

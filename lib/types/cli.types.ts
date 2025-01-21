@@ -15,6 +15,7 @@ export type CliValuesObj = {
   last?: string;
   margins?: PDFMargin;
   'no-contents'?: string;
+  'no-starlight-print-css'?: boolean;
   paddings?: string;
   path?: string;
   'pdf-outline'?: boolean;

@@ -52,6 +52,9 @@ const cliOptions = {
   'no-contents': {
     validate: validators.isBoolean
   },
+  'no-starlight-print-css': {
+    validate: validators.isBoolean
+  },
   paddings: {
     validate: validators.isSpacing
   },
@@ -134,6 +137,9 @@ class CliArgs {
             type: 'string'
           },
           'no-contents': {
+            type: 'boolean'
+          },
+          'no-starlight-print-css': {
             type: 'boolean'
           },
           paddings: {

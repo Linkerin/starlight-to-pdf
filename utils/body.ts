@@ -50,7 +50,7 @@ interface ComposeBodyParams extends GetAllContentReturn {
   cliArgs: CliArgs;
 }
 
-async function composeBody({
+export async function composeBody({
   baseOrigin,
   cliArgs,
   contentsData,
@@ -107,4 +107,20 @@ async function composeBody({
   return body;
 }
 
-export default composeBody;
+export function injectBody(
+  result: string,
+  noPrintCss: boolean,
+  selector: string
+) {
+  const body = document.body;
+  body.innerHTML = result;
+
+  if (noPrintCss) {
+    const printStyles = document.head.querySelector(selector);
+    if (printStyles) {
+      printStyles.remove();
+    }
+  }
+
+  return body.innerHTML;
+}

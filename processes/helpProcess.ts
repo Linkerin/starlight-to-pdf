@@ -70,6 +70,9 @@ Options:
 --no-contents	${cliNeutralText(
     'Disables generation of the table of contents in the PDF.'
   )}
+--no-starlight-print-css	${cliNeutralText(
+    "Disables the default `@media print` CSS styles applied by Starlight. Enabling this flag retains the website's original colors when printing."
+  )}
 --paddings	${cliNeutralText(
     'Sets padding for the PDF content. Provide as a string with 4 values separated by space, reflecting the top, right, bottom and left paddings respectively. Paddings are disabled by default.'
   )}
