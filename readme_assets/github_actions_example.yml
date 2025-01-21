@@ -1,0 +1,60 @@
+name: Create PDF and deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-pdf-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: Install Chromium
+        run: sudo apt-get install -y chromium-browser
+
+      - name: Install, build and run
+        run: |
+          npm install
+          npm run build
+          npm run preview
+
+      - name: Wait for server startup
+        run: sleep 5
+        shell: bash
+
+        # Process ID will be used later to shut down the server
+      - name: Record preview server's process ID
+        run: lsof -ti:4321 > preview.pid
+
+        # Change the port in the URL if you've configured the server to a different port.
+        # `/usr/bin/chromium-browser` is a default path for Chromium executable on Ubuntu.
+        # The resulting PDF will be available at https://target.website/_pdf/docs.pdf
+      - name: Create PDF
+        run:
+          npx starlight-to-pdf http://localhost:4321 --browser-executable
+          /usr/bin/chromium-browser -p ./dist/_pdf --filename docs --pdf-outline
+
+      - name: Stop preview server
+        run: |
+          kill $(cat preview.pid)
+          rm preview.pid
+
+        # Get your Netlify Auth Token from https://app.netlify.com/user/applications#personal-access-tokens
+        # and Site ID from Site page > Site configuration > Site details > Site information.
+        # Add them to the repo (Repository > Settings > Secrets and variables > Actions > Repository secretes)
+        # as secrets named NETLIFY_AUTH_TOKEN and NETLIFY_SITE_ID.
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          npm install -g netlify-cli
+          netlify deploy --auth=$NETLIFY_AUTH_TOKEN --prod --dir=dist --site=$NETLIFY_SITE_ID

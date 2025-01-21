@@ -14,6 +14,9 @@
   - [Special CSS classes](#classes)
   - [PDF header and footer](#header-footer)
   - [Demo](#demo)
+- [🤖 GitHub Actions](#actions)
+  - [Deploying with Netlify](#netlify)
+  - [Generating PDF locally](#generate-local)
 - [📨 Contacts](#contacts)
 - [🪪 License](#license)
 
@@ -122,6 +125,68 @@ You may also check [the resulting PDF file](./readme_assets/spectrum-docs.pdf).
 ### Demo <a id="demo"></a>
 
 ![Usage demo](./readme_assets/demo.gif)
+
+## 🤖 GitHub Actions <a id="actions"></a>
+
+To set up GitHub Actions, create a `.github/workflows` folder in the root of
+your project. Use the example
+[YAML file for GitHub Actions](./readme_assets/github_actions_example.yml)
+provided. This file includes all the steps required to generate a PDF file, add
+it to the `dist` folder, and deploy your website to
+[Netlify](https://www.netlify.com/).
+
+Key points:
+
+- **Chromium installation**: The workflow installs Chromium and specifies its
+  executable path using the `--browser-executable` flag.
+
+- **PDF output location**: In the example, the output folder is set to
+  `./dist/_pdf`, making the PDF accessible at
+  `https://your.website/_pdf/docs.pdf`. Do not forget to change the `--filename`
+  in the example YAML file.
+
+- **Custom port**: If your preview server uses a custom port, update the
+  following steps in the YAML file accordingly:
+
+  - `Record preview server's process ID`
+  - `Create PDF`
+
+- **Custom build commands**: If your project has a custom build command, modify
+  the YAML file to fit your workflow.
+
+### Deploying with Netlify <a id="netlify"></a>
+
+The example YAML assumes deployment to Netlify. If you use a different hosting
+provider, update the deployment steps to match your setup.
+
+For Netlify, follow these steps:
+
+1. Obtain your Netlify Auth Token from
+   [User settings](https://app.netlify.com/user/applications#personal-access-tokens).
+
+2. Get your Site ID from
+   `Site page > Site configuration > Site details > Site information`.
+
+3. Add them as repository secrets under the names `NETLIFY_AUTH_TOKEN` and
+   `NETLIFY_SITE_ID`. Check
+   [GitHub's guide](https://docs.github.com/en/actions/security-for-github-actions/security-guides/using-secrets-in-github-actions)
+   for details.
+
+### Generating PDF locally <a id="generate-local"></a>
+
+To generate a PDF file during local development, add the following command to
+your `package.json`:
+
+```json
+"scripts": {
+    "pdf": "npm run build && (npm run preview > /dev/null & sleep 5); lsof -ti:4321 > preview.pid; npx starlight-to-pdf http://localhost:4321 -p ./public/_pdf --filename docs --pdf-outline; kill $(cat preview.pid) && rm preview.pid && echo 'PDF script finished'"
+}
+```
+
+This script will generate the PDF and save it in the `public/_pdf` folder.
+
+Note, if your preview server uses a non-default port, or your project requires a
+custom build command, update the script accordingly.
 
 ## 📨 Contacts <a id="contacts"></a>
 
