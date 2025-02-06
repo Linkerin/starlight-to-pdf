@@ -36,6 +36,12 @@ Options:
       'bold'
     )}.`
   )}
+--contents-links	${cliNeutralText(
+    `Specifies the type of links in the generated table of contents. Use 'internal' for links that navigate within the PDF file or 'external' for links that point to the documentation website. Default: ${cliTextStyle(
+      '`external`',
+      'bold'
+    )}.`
+  )}
 --css-page-size	${cliNeutralText(
     "Allows setting the PDF page size using CSS `@page`. If the predefined sizes in the '--format' option don't meet your needs, enable this option and specify the desired page size in custom CSS provided via the '--styles' flag (e.g., `@page { size: 8.5in 14in; }`). Note: if you define a page size in CSS without enabling this option, the size from the '--format' option will be used instead, and the content will be scaled to fit the dimensions specified in `@page`."
   )}

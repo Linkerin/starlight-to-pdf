@@ -4,6 +4,7 @@ export type CliValuesObj = {
   url?: URL;
   'browser-executable'?: string;
   'contents-name'?: string;
+  'contents-links'?: 'internal' | 'external';
   'css-page-size'?: boolean;
   exclude?: Set<string>;
   filename?: string;

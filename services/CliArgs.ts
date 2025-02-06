@@ -16,6 +16,9 @@ const cliOptions = {
   'contents-name': {
     validate: validators.isString
   },
+  'contents-links': {
+    validate: validators.isContentsLinks
+  },
   'css-page-size': {
     validate: validators.isBoolean
   },
@@ -100,6 +103,10 @@ class CliArgs {
           },
           'contents-name': {
             type: 'string'
+          },
+          'contents-links': {
+            type: 'string',
+            default: 'external'
           },
           'css-page-size': {
             type: 'boolean'

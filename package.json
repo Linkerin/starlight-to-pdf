@@ -1,6 +1,6 @@
 {
   "name": "starlight-to-pdf",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A command-line tool to convert Starlight documentation websites into PDF files.",
   "source": "index.js",
   "type": "module",
@@ -36,7 +36,8 @@
   "devDependencies": {
     "@types/bun": "latest",
     "puppeteer": "^23.10.4",
-    "puppeteer-autoscroll-down": "^2.0.0"
+    "puppeteer-autoscroll-down": "^2.0.0",
+    "typescript": "^5.7.3"
   },
   "peerDependencies": {
     "puppeteer": "^23.10.4",

@@ -8,6 +8,7 @@ import type {
   GetAllContentReturn
 } from '../lib/types/common.types';
 import errorCatcher from './errorCatcher';
+import elementIdGenerator from './elementIdGenerator';
 import getNextUrl from './getNextUrl';
 import gotoWithRetry from './gotoWithRetry';
 import { logger } from '../services/Logger';
@@ -18,55 +19,124 @@ interface ProcessPageContentReturn {
   html: string;
 }
 
-async function processPageContent(
-  page: Page
-): Promise<ProcessPageContentReturn> {
-  const currentLink = page.url();
+interface ParsePageParams {
+  page: Page;
+  internalLinks?: boolean;
+}
 
-  const [error, parsedData] = await errorCatcher(
-    page.evaluate(
-      (link, selectors, classnames) => {
+interface ParsedData {
+  heading: {
+    html: string;
+    text: string;
+    url: string;
+  };
+  mainInfo: {
+    html: string;
+  };
+  subheadings: {
+    heading: string;
+    url: string;
+  }[];
+}
+
+interface ParsePageParams {
+  page: Page;
+  internalLinks?: boolean;
+}
+
+interface ParsedData {
+  heading: {
+    html: string;
+    text: string;
+    url: string;
+  };
+  mainInfo: {
+    html: string;
+  };
+  subheadings: {
+    heading: string;
+    url: string;
+  }[];
+}
+
+async function parsePage({
+  page,
+  internalLinks = false
+}: ParsePageParams): Promise<ParsedData> {
+  const currLink = page.url();
+
+  const evaluatePage = async (link: string, isInternal: boolean) => {
+    return page.evaluate(
+      (link, selectors, classnames, isInternal) => {
+        const currentUrl = new URL(link);
+        const pathname = currentUrl.pathname;
+
         const heading = document.querySelector(
           selectors.heading
         ) as HTMLElement | null;
         heading?.classList.add(classnames.heading);
+        heading?.setAttribute('id', pathname);
 
         const mainInfo = document.querySelector(selectors.mainInfo);
         mainInfo?.classList.add(classnames.pageBreak);
 
-        const subheadingElements = document.querySelectorAll(
-          selectors.subheading
-        ) as NodeListOf<HTMLElement>;
-        const subheadings = Array.from(subheadingElements);
+        const subheadings = Array.from(
+          document.querySelectorAll(selectors.subheading)
+        ).map(el => {
+          const subheading = el as HTMLElement;
+          if (isInternal) {
+            const origId =
+              el.getAttribute('id') ??
+              elementIdGenerator(subheading.innerText ?? '');
+            el.setAttribute('id', `${pathname}-${origId}`);
+          }
+          const id =
+            subheading.getAttribute('id') ?? elementIdGenerator(pathname);
+          return {
+            heading: subheading.innerText ?? '',
+            url: isInternal ? `#${id}` : `${link}#${id}`
+          };
+        });
 
         return {
           heading: {
             html: heading?.outerHTML ?? '',
-            text: heading?.innerText ?? ''
+            text: heading?.innerText ?? '',
+            url: isInternal ? `#${pathname}` : link
           },
           mainInfo: { html: mainInfo?.outerHTML ?? '' },
-          subheadings: subheadings.map(el => ({
-            heading: el.innerText ?? '',
-            url: link + '#' + el.getAttribute('id')
-          }))
+          subheadings
         };
       },
-      currentLink,
+      link,
       SELECTORS,
-      CLASSNAMES
-    )
+      CLASSNAMES,
+      isInternal
+    );
+  };
+
+  const [error, parsedData] = await errorCatcher(
+    evaluatePage(currLink, internalLinks)
   );
 
   if (error) {
-    throw new ParsingError(
-      `Didn't manage to parse the following page: '${currentLink}'`,
-      { originalErrorMessage: error.message }
-    );
+    throw new ParsingError(`Failed to parse page: '${currLink}'`, {
+      originalErrorMessage: error.message
+    });
   }
+
+  return parsedData;
+}
+
+async function processPageContent(
+  page: Page,
+  internalLinks?: boolean
+): Promise<ProcessPageContentReturn> {
+  const parsedData = await parsePage({ page, internalLinks });
 
   const contents: Contents = {
     heading: parsedData.heading.text,
-    url: currentLink,
+    url: parsedData.heading.url,
     children: parsedData.subheadings
   };
 
@@ -90,7 +160,12 @@ async function getAllContent({
 
   if (!isExcluded) {
     logger.info(cliNeutralText(`Parsing page: ${cliLink(currUrl)}`));
-    const { contents, html } = await processPageContent(page);
+    const contentsLinksInternal =
+      cliArgs.values['contents-links'] === 'internal' ? true : false;
+    const { contents, html } = await processPageContent(
+      page,
+      contentsLinksInternal
+    );
     contentsData.add(contents);
     parsedHtml = html;
   } else {

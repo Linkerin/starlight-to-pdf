@@ -38,6 +38,19 @@ const validators = {
     return true;
   },
 
+  isContentsLinks(value: unknown, key: string): value is string {
+    if (!validators.isString(value, key)) return false;
+
+    const validValues = new Set(['internal', 'external']);
+    if (!validValues.has(value)) {
+      throw new ValidationError(
+        `\`--${key}\` must be one of '${[...validValues].join(' | ')}'.`
+      );
+    }
+
+    return true;
+  },
+
   isExclude(value: unknown, key: string): value is string[] {
     if (!Array.isArray(value)) {
       throw new ValidationError(`\`--${key}\` values must result in an array.`);
