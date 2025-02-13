@@ -8,7 +8,6 @@ import type {
   GetAllContentReturn
 } from '../lib/types/common.types';
 import errorCatcher from './errorCatcher';
-import elementIdGenerator from './elementIdGenerator';
 import getNextUrl from './getNextUrl';
 import gotoWithRetry from './gotoWithRetry';
 import { logger } from '../services/Logger';
@@ -85,13 +84,10 @@ async function parsePage({
         ).map(el => {
           const subheading = el as HTMLElement;
           if (isInternal) {
-            const origId =
-              el.getAttribute('id') ??
-              elementIdGenerator(subheading.innerText ?? '');
+            const origId = el.getAttribute('id') ?? crypto.randomUUID();
             el.setAttribute('id', `${pathname}-${origId}`);
           }
-          const id =
-            subheading.getAttribute('id') ?? elementIdGenerator(pathname);
+          const id = subheading.getAttribute('id') ?? crypto.randomUUID();
           return {
             heading: subheading.innerText ?? '',
             url: isInternal ? `#${id}` : `${link}#${id}`
