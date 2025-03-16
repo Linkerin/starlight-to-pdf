@@ -22,6 +22,7 @@ export type CliValuesObj = {
   'pdf-outline'?: boolean;
   'preceding-html'?: string;
   'print-bg'?: boolean;
+  'scroll-delay'?: number;
   styles?: string;
   timeout?: number;
   version?: boolean;

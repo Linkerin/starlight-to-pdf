@@ -94,6 +94,12 @@ Options:
 --print-bg	${cliNeutralText(
     "Enables printing of background graphics. It's a `printBackground` property in Puppeteer's PDFOptions."
   )}
+--scroll-delay	${cliNeutralText(
+    `Specifies the delay (in milliseconds) between each viewport scroll to allow lazy-loaded content to fully render. Default value is ${cliTextStyle(
+      '`100`.',
+      'bold'
+    )}`
+  )}
 --styles	${cliNeutralText(
     'Path to a CSS file for custom PDF styles. The styles are injected into the `<style>` tag inside the `<body>` element. Also check the README for a list of special CSS classes used by the tool.'
   )}

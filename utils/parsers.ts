@@ -107,6 +107,22 @@ const parsers = {
     return result;
   },
 
+  scrollDelay: (delay: string): number => {
+    if (!delay) {
+      throw new ValidationError('Scroll delay value is required for parsing.');
+    }
+
+    const parsedDelay = parseInt(delay, 10);
+
+    if (isNaN(parsedDelay) || parsedDelay < 0) {
+      throw new ValidationError(
+        `Invalid scroll delay value provided. It must be a string representing a positive number.`
+      );
+    }
+
+    return parsedDelay;
+  },
+
   timeout: (timeout: string): number => {
     if (!timeout) {
       throw new ValidationError('Timeout value is required for parsing.');

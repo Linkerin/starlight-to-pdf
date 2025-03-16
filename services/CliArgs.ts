@@ -73,6 +73,10 @@ const cliOptions = {
   'print-bg': {
     validate: validators.isBoolean
   },
+  'scroll-delay': {
+    validate: validators.isString,
+    parse: parsers.scrollDelay
+  },
   styles: {
     validate: validators.isStylesFile
   },
@@ -166,6 +170,9 @@ class CliArgs {
           'print-bg': {
             type: 'boolean'
           },
+          'scroll-delay': {
+            type: 'string'
+          },
           styles: {
             type: 'string'
           },
@@ -226,6 +233,12 @@ class CliArgs {
 
           case 'margins':
             this._values.margins = cliOptions.margins.parse(value as string);
+            break;
+
+          case 'scroll-delay':
+            this._values['scroll-delay'] = cliOptions['scroll-delay'].parse(
+              value as string
+            );
             break;
 
           case 'timeout':

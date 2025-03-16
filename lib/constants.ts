@@ -74,4 +74,6 @@ export const PAPER_FORMATS = new Set([
 
 export const PDF_FORMAT: PaperFormat = 'A4';
 
+export const SCROLL_DELAY_MS = 100;
+
 export const TIMEOUT_MS = 180_000; // 3 minutes

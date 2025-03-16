@@ -15,7 +15,7 @@ import getVersion from '../utils/getVersion';
 import { logger } from '../services/Logger';
 import { ParsingError, ValidationError } from '../services/Errors';
 import recordPdf from '../utils/recordPdf';
-import { SELECTORS, TIMEOUT_MS } from '../lib/constants';
+import { SCROLL_DELAY_MS, SELECTORS, TIMEOUT_MS } from '../lib/constants';
 
 const cliToolName = `${cliColor('Starlight', 'yellow', {
   bright: true
@@ -97,7 +97,10 @@ async function mainProcess(cliArgs: CliArgs) {
       Boolean(cliArgs.values['no-starlight-print-css']),
       SELECTORS.starlightPrintStyles
     );
-    await scrollPageToBottom(page, { size: 1100 });
+    await scrollPageToBottom(page, {
+      size: 1100,
+      delay: cliArgs.values['scroll-delay'] ?? SCROLL_DELAY_MS
+    });
 
     await recordPdf({ cliArgs, hostname: baseUrl.hostname, page });
 
