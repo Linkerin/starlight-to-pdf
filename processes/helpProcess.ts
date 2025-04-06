@@ -82,6 +82,12 @@ Options:
 --paddings	${cliNeutralText(
     'Sets padding for the PDF content. Provide as a string with 4 values separated by space, reflecting the top, right, bottom and left paddings respectively. Paddings are disabled by default.'
   )}
+--page-wait-until	${cliNeutralText(
+    `Specifies the event that indicates a successful page load. Possible values: 'load', 'domcontentloaded', 'networkidle0', 'networkidle2'. Default: ${cliTextStyle(
+      "'domcontentloaded'",
+      'bold'
+    )}. `
+  )}
 --path	-p	${cliNeutralText(
     'Sets the directory path for the output PDF. Default is the current working directory.'
   )}

@@ -61,6 +61,9 @@ const cliOptions = {
   paddings: {
     validate: validators.isSpacing
   },
+  'page-wait-until': {
+    validate: validators.isPageWaitUntil
+  },
   path: {
     validate: validators.isPath
   },
@@ -156,13 +159,16 @@ class CliArgs {
           paddings: {
             type: 'string'
           },
+          'page-wait-until': {
+            type: 'string',
+            default: 'domcontentloaded'
+          },
           path: {
             type: 'string',
             short: 'p'
           },
           'pdf-outline': {
-            type: 'boolean',
-            default: false
+            type: 'boolean'
           },
           'preceding-html': {
             type: 'string'

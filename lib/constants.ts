@@ -77,3 +77,10 @@ export const PDF_FORMAT: PaperFormat = 'A4';
 export const SCROLL_DELAY_MS = 100;
 
 export const TIMEOUT_MS = 180_000; // 3 minutes
+
+export const WAIT_UNTIL_OPTIONS = new Set([
+  'load',
+  'domcontentloaded',
+  'networkidle0',
+  'networkidle2'
+]);

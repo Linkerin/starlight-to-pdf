@@ -1,4 +1,4 @@
-import type { Page } from 'puppeteer';
+import type { Page, PuppeteerLifeCycleEvent } from 'puppeteer';
 
 import { CLASSNAMES, SELECTORS } from '../lib/constants';
 import { cliLink, cliNeutralText, cliTextStyle } from './cliStylings';
@@ -192,7 +192,11 @@ async function getAllContent({
     };
   }
 
-  await gotoWithRetry(page, nextUrl.href, { waitUntil: 'domcontentloaded' });
+  await gotoWithRetry(page, nextUrl.href, {
+    waitUntil:
+      (cliArgs.values['page-wait-until'] as PuppeteerLifeCycleEvent) ??
+      'domcontentloaded'
+  });
 
   return getAllContent({
     htmlContent: updatedHtmlContent,

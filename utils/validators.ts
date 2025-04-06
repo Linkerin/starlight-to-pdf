@@ -1,7 +1,11 @@
 import type { PaperFormat } from 'puppeteer';
 import { sep } from 'path';
 
-import { basePaperFormats, PAPER_FORMATS } from '../lib/constants';
+import {
+  basePaperFormats,
+  PAPER_FORMATS,
+  WAIT_UNTIL_OPTIONS
+} from '../lib/constants';
 import { ValidationError } from '../services/Errors';
 
 const invalidChars = /[<>:"|?*]/; // Windows-specific characters
@@ -98,6 +102,20 @@ const validators = {
   isHtmlFile(value: unknown, key: string): boolean {
     if (!validators.isPath(value, key)) return false;
     if (!isProperExtension(value, 'html')) return false;
+
+    return true;
+  },
+
+  isPageWaitUntil(value: unknown, key: string): boolean {
+    if (!validators.isString(value, key)) return false;
+
+    if (!WAIT_UNTIL_OPTIONS.has(value)) {
+      throw new ValidationError(
+        `Invalid \`--${key}\` value. Provided: '${value}'.\nAllowed values: '${Array.from(
+          WAIT_UNTIL_OPTIONS
+        ).join("', '")}'.`
+      );
+    }
 
     return true;
   },

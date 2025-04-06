@@ -18,6 +18,7 @@ export type CliValuesObj = {
   'no-contents'?: string;
   'no-starlight-print-css'?: boolean;
   paddings?: string;
+  'page-wait-until'?: string;
   path?: string;
   'pdf-outline'?: boolean;
   'preceding-html'?: string;
