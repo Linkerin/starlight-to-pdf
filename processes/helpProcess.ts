@@ -30,6 +30,9 @@ Options:
 --browser-executable	${cliNeutralText(
     'Specifies a path to a browser executable to use instead of the default one (e.g. --browser-executable /usr/bin/chromium-browser).'
   )}
+--browser-no-sandbox	${cliNeutralText(
+    'Adds `--no-sandbox` and `--disable-setuid-sandbox` flags when launching the browser. Useful when running in environments where sandboxing is not available (e.g., certain CI/CD pipelines or Docker containers).'
+  )}
 --contents-name	${cliNeutralText(
     `Customizes the generated table of contents name in the PDF. Default: ${cliTextStyle(
       '`Contents`',

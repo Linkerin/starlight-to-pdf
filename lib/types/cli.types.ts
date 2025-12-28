@@ -3,6 +3,7 @@ import type { PDFMargin } from 'puppeteer';
 export type CliValuesObj = {
   url?: URL;
   'browser-executable'?: string;
+  'browser-no-sandbox'?: boolean;
   'contents-name'?: string;
   'contents-links'?: 'internal' | 'external';
   'css-page-size'?: boolean;

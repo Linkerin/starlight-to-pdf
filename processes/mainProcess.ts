@@ -48,6 +48,9 @@ async function mainProcess(cliArgs: CliArgs) {
     };
     if (cliArgs.values['browser-executable']) {
       browserOptions.executablePath = cliArgs.values['browser-executable'];
+      if (cliArgs.values['browser-no-sandbox']) {
+        browserOptions.args = ['--no-sandbox', '--disable-setuid-sandbox'];
+      }
       logger.info(
         `Using custom browser executable: ${cliLink(
           browserOptions.executablePath
