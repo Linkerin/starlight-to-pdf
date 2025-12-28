@@ -13,6 +13,9 @@ const cliOptions = {
   'browser-executable': {
     validate: validators.isPath
   },
+  'browser-no-sandbox': {
+    validate: validators.isBoolean
+  },
   'contents-name': {
     validate: validators.isString
   },
@@ -107,6 +110,9 @@ class CliArgs {
           },
           'browser-executable': {
             type: 'string'
+          },
+          'browser-no-sandbox': {
+            type: 'boolean'
           },
           'contents-name': {
             type: 'string'
